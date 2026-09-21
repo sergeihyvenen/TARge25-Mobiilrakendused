@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="TARge25.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TARge25"
+    Title="TARge25">
+
+    <TabBar>
+        <ShellContent
+            Title="Puu"
+            ContentTemplate="{DataTemplate local:TreePage}"
+            Route="TreePage" />
+
+        <ShellContent
+            Title="Lumememm"
+            ContentTemplate="{DataTemplate local:LumememmPage}"
+            Route="LumememmPage" />
+
+        <ShellContent
+            Title="Pop-up"
+            ContentTemplate="{DataTemplate local:PopUpPage}"
+            Route="PopUpPage" />
+
+        <ShellContent
+            Title="Valgusfoor"
+            ContentTemplate="{DataTemplate local:ValgusfoorPage}"
+            Route="ValgusfoorPage" />
+    </TabBar>
+
+</Shell>
