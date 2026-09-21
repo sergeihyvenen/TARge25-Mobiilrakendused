@@ -3,237 +3,806 @@ namespace TARge25;
 public partial class TreePage : ContentPage
 {
     private readonly Random random = new();
-    private Color normalLeafColor = Color.FromArgb("#49A942");
-    private Color normalTopLeafColor = Color.FromArgb("#55B94D");
+
+    private CancellationTokenSource? seasonAnimationCancellation;
+
 
     public TreePage()
     {
         InitializeComponent();
-        UpdateSkyForMonth(SeasonDatePicker.Date?.Month ?? DateTime.Today.Month);
+
+        ActionPicker.SelectedIndex = 0;
+
+        DateTime selectedDate =
+            SeasonDatePicker.Date ?? DateTime.Today;
+
+        ApplySeason(selectedDate);
     }
 
-    private async void OnActionClicked(object? sender, EventArgs e)
+
+    // =========================================================
+    // KÄIVITA
+    // =========================================================
+
+    private async void OnActionClicked(
+        object? sender,
+        EventArgs e)
     {
-        if (ActionPicker.SelectedItem is not string action)
+        if (ActionPicker.SelectedItem is null)
         {
-            InfoLabel.Text = "Vali kõigepealt tegevus!";
+            InfoLabel.Text = "⚠️ Palun vali tegevus!";
             return;
         }
+
+        string action =
+            ActionPicker.SelectedItem.ToString() ?? "";
 
         switch (action)
         {
             case "Kasva":
-                await GrowTreeAsync();
+                await GrowTree();
                 break;
 
             case "Õitse":
-                await BloomTreeAsync();
+                await BloomTree();
                 break;
 
             case "Värise":
-                await ShakeTreeAsync();
+                await ShakeTree();
                 break;
 
             case "Langeta":
-                await FellTreeAsync();
+                await CutTree();
                 break;
         }
     }
 
-    private async Task GrowTreeAsync()
+
+    // =========================================================
+    // KASVA
+    // =========================================================
+
+    private async Task GrowTree()
     {
-        ResetTreePosition();
+        ResetTreeTransform();
 
-        // Loovuse lisa: iga kord kasvab puu juhuslikult erineva suurusega.
-        double targetScale = 1.2 + random.NextDouble() * 0.4;
-        InfoLabel.Text = $"Puu kasvab! Suurus: {targetScale:F2}x";
+        uint speed = GetAnimationSpeed();
 
-        await TreeGroup.ScaleTo(targetScale, GetDuration());
+        // Juhuslik kasvamine
+        double scale =
+            1.15 + random.NextDouble() * 0.35;
+
+        InfoLabel.Text =
+            $"🌱 Puu kasvab! {scale:F1}x";
+
+        await TreeContainer.ScaleToAsync(
+            scale,
+            speed);
     }
 
-    private async Task BloomTreeAsync()
-    {
-        ResetTreePosition();
-        TreeGroup.IsVisible = true;
-        TreeGroup.Opacity = 1;
 
-        CrownLeft.BackgroundColor = Colors.LightPink;
-        CrownRight.BackgroundColor = Colors.Pink;
-        CrownTop.BackgroundColor = Colors.LightPink;
+    // =========================================================
+    // ÕITSE
+    // =========================================================
+
+    private async Task BloomTree()
+    {
+        ResetTreeTransform();
+
+        uint speed = GetAnimationSpeed();
+
+        InfoLabel.Text = "🌸 Puu õitseb!";
 
         Flower1.IsVisible = true;
         Flower2.IsVisible = true;
         Flower3.IsVisible = true;
         Flower4.IsVisible = true;
 
-        RestoreApples();
-        InfoLabel.Text = "Puu õitseb!";
+        Flower1.Opacity = 0;
+        Flower2.Opacity = 0;
+        Flower3.Opacity = 0;
+        Flower4.Opacity = 0;
 
         await Task.WhenAll(
-            CrownLeft.ScaleTo(1.08, GetDuration() / 2),
-            CrownRight.ScaleTo(1.08, GetDuration() / 2),
-            CrownTop.ScaleTo(1.08, GetDuration() / 2)
-        );
-
-        await Task.WhenAll(
-            CrownLeft.ScaleTo(1.0, GetDuration() / 2),
-            CrownRight.ScaleTo(1.0, GetDuration() / 2),
-            CrownTop.ScaleTo(1.0, GetDuration() / 2)
+            Flower1.FadeToAsync(1, speed),
+            Flower2.FadeToAsync(1, speed),
+            Flower3.FadeToAsync(1, speed),
+            Flower4.FadeToAsync(1, speed)
         );
     }
 
-    private async Task ShakeTreeAsync()
-    {
-        ResetTreePosition();
-        InfoLabel.Text = "Puu väriseb tuules!";
 
-        uint part = Math.Max(100u, GetDuration() / 4);
-        await TreeGroup.TranslateTo(-25, 0, part);
-        await TreeGroup.TranslateTo(25, 0, part);
-        await TreeGroup.TranslateTo(-18, 0, part);
-        await TreeGroup.TranslateTo(18, 0, part);
-        await TreeGroup.TranslateTo(0, 0, part);
+    // =========================================================
+    // VÄRISE
+    // =========================================================
+
+    private async Task ShakeTree()
+    {
+        ResetTreeTransform();
+
+        uint speed = GetAnimationSpeed();
+
+        uint part =
+            Math.Max(speed / 6, 50);
+
+        InfoLabel.Text =
+            "💨 Puu väriseb tuules!";
+
+        await TreeContainer.TranslateToAsync(
+            -22,
+            0,
+            part);
+
+        await TreeContainer.TranslateToAsync(
+            22,
+            0,
+            part);
+
+        await TreeContainer.TranslateToAsync(
+            -16,
+            0,
+            part);
+
+        await TreeContainer.TranslateToAsync(
+            16,
+            0,
+            part);
+
+        await TreeContainer.TranslateToAsync(
+            -8,
+            0,
+            part);
+
+        await TreeContainer.TranslateToAsync(
+            0,
+            0,
+            part);
     }
 
-    private async Task FellTreeAsync()
+
+    // =========================================================
+    // LANGETA
+    // =========================================================
+
+    private async Task CutTree()
     {
-        int month = SeasonDatePicker.Date?.Month ?? DateTime.Today.Month;
-        TimeSpan time = WorkTimePicker.Time ?? TimeSpan.FromHours(12);
+        DateTime selectedDate =
+            SeasonDatePicker.Date ?? DateTime.Today;
 
-        bool isWinter = month == 12 || month == 1 || month == 2;
-        bool isDaylight = time >= TimeSpan.FromHours(8) && time <= TimeSpan.FromHours(17);
+        TimeSpan selectedTime =
+            WorkTimePicker.Time ?? TimeSpan.FromHours(12);
 
-        if (!isWinter || !isDaylight)
+        int month = selectedDate.Month;
+        int hour = selectedTime.Hours;
+
+
+        bool isWinter =
+            month == 12 ||
+            month == 1 ||
+            month == 2;
+
+
+        bool isDay =
+            hour >= 8 &&
+            hour <= 17;
+
+
+        if (!isWinter && !isDay)
         {
-            if (!isWinter && !isDaylight)
-                InfoLabel.Text = "Pimedas ja väljaspool talve puid ei langetata!";
-            else if (!isWinter)
-                InfoLabel.Text = "Puud tohib langetada ainult talvel (12, 1 või 2)!";
-            else
-                InfoLabel.Text = "Puud tohib langetada ainult valgel ajal 08:00–17:00!";
+            InfoLabel.Text =
+                "❌ Pimedas ja väljaspool talve puid ei langetata!";
+            return;
+        }
+
+
+        if (!isWinter)
+        {
+            InfoLabel.Text =
+                "❌ Puid tohib langetada ainult talvel!";
+            return;
+        }
+
+
+        if (!isDay)
+        {
+            InfoLabel.Text =
+                "❌ Tööd tohib teha ainult kell 08:00–17:00!";
+            return;
+        }
+
+
+        ResetTreeTransform();
+
+        TreeContainer.AnchorX = 0.5;
+        TreeContainer.AnchorY = 1;
+
+        InfoLabel.Text =
+            "🪓 Puu langeb!";
+
+        await TreeContainer.RotateToAsync(
+            90,
+            GetAnimationSpeed());
+    }
+
+
+    // =========================================================
+    // SLIDER
+    // =========================================================
+
+    private void OnOpacityChanged(
+        object? sender,
+        ValueChangedEventArgs e)
+    {
+        Foliage.Opacity = e.NewValue;
+
+        OpacityLabel.Text =
+            $"Opacity: {e.NewValue:F2}";
+    }
+
+
+    // =========================================================
+    // STEPPER
+    // =========================================================
+
+    private void OnSpeedChanged(
+        object? sender,
+        ValueChangedEventArgs e)
+    {
+        SpeedLabel.Text =
+            $"{(int)e.NewValue} ms";
+    }
+
+
+    // =========================================================
+    // DATE PICKER
+    // =========================================================
+
+    private void OnDateSelected(
+        object? sender,
+        DateChangedEventArgs e)
+    {
+        DateTime date =
+            e.NewDate ?? DateTime.Today;
+
+        ApplySeason(date);
+    }
+
+
+    // =========================================================
+    // AASTAAJAD
+    // =========================================================
+
+    private void ApplySeason(DateTime date)
+    {
+        StopSeasonAnimations();
+
+        HideSeasonLayers();
+
+        HideActionFlowers();
+
+        ResetApples(false);
+
+        int month = date.Month;
+
+
+        // =====================================================
+        // TALV
+        // =====================================================
+
+        if (month == 12 ||
+            month == 1 ||
+            month == 2)
+        {
+            TreeArea.BackgroundColor =
+                Color.FromArgb("#B9C8D5");
+
+            MainLayout.BackgroundColor =
+                Color.FromArgb("#E9EFF3");
+
+            GrassBack.Color =
+                Color.FromArgb("#DDE8EC");
+
+            GrassFront.Color =
+                Color.FromArgb("#CBD8DE");
+
+            SnowGround.IsVisible = true;
+
+            WinterLayer.IsVisible = true;
+
+            Sun.Opacity = 0.45;
+
+            Cloud1.Opacity = 0.90;
+            Cloud2.Opacity = 0.85;
+
+
+            // Talvine hele lehestik
+            SetCrownColors(
+                "#78909C",
+                "#90A4AE",
+                "#78909C",
+                "#B0BEC5",
+                "#90A4AE",
+                "#90A4AE"
+            );
+
+            InfoLabel.Text =
+                "❄️ Talv – sajab lund";
+
+            StartSnowAnimation();
 
             return;
         }
 
-        TreeGroup.IsVisible = true;
-        TreeGroup.Opacity = 1;
-        TreeGroup.TranslationX = 0;
-        TreeGroup.TranslationY = 0;
-        InfoLabel.Text = "Tingimused sobivad. Puu langeb!";
 
-        await TreeGroup.RotateTo(90, GetDuration());
-    }
+        // =====================================================
+        // KEVAD
+        // =====================================================
 
-    private void OnOpacityChanged(object? sender, ValueChangedEventArgs e)
-    {
-        double opacity = e.NewValue;
-
-        CrownLeft.Opacity = opacity;
-        CrownRight.Opacity = opacity;
-        CrownTop.Opacity = opacity;
-        Flower1.Opacity = opacity;
-        Flower2.Opacity = opacity;
-        Flower3.Opacity = opacity;
-        Flower4.Opacity = opacity;
-        Apple1.Opacity = opacity;
-        Apple2.Opacity = opacity;
-        Apple3.Opacity = opacity;
-
-        OpacityLabel.Text = $"Lehestiku läbipaistvus: {(int)(opacity * 100)}%";
-    }
-
-    private void OnSpeedChanged(object? sender, ValueChangedEventArgs e)
-    {
-        SpeedLabel.Text = $"Animatsiooni aeg: {(int)e.NewValue} ms";
-    }
-
-    private void OnDateSelected(object? sender, DateChangedEventArgs e)
-    {
-        UpdateSkyForMonth(e.NewDate?.Month ?? DateTime.Today.Month);
-    }
-
-    private void UpdateSkyForMonth(int month)
-    {
-        // Loovuse lisa: taevas muutub DatePickeris valitud aastaaja järgi.
-        if (month is 6 or 7 or 8)
+        if (month >= 3 &&
+            month <= 5)
         {
-            Scene.BackgroundColor = Color.FromArgb("#9DDBFF");
-            SunMoonLabel.Text = "☀️";
-        }
-        else if (month is 9 or 10 or 11)
-        {
-            Scene.BackgroundColor = Color.FromArgb("#F2BE7E");
-            SunMoonLabel.Text = "🌤️";
-        }
-        else if (month is 12 or 1 or 2)
-        {
-            Scene.BackgroundColor = Color.FromArgb("#C7D0D9");
-            SunMoonLabel.Text = "❄️";
-        }
-        else
-        {
-            Scene.BackgroundColor = Color.FromArgb("#CFF0C8");
-            SunMoonLabel.Text = "🌤️";
-        }
-    }
+            TreeArea.BackgroundColor =
+                Color.FromArgb("#BFE8FF");
 
-    private async void OnAppleTapped(object? sender, TappedEventArgs e)
-    {
-        if (e.Parameter is not string appleName)
+            MainLayout.BackgroundColor =
+                Color.FromArgb("#E8F5E9");
+
+            GrassBack.Color =
+                Color.FromArgb("#9CCC65");
+
+            GrassFront.Color =
+                Color.FromArgb("#7CB342");
+
+            SpringLayer.IsVisible = true;
+
+            Sun.Opacity = 0.80;
+
+            SetCrownColors(
+                "#66BB6A",
+                "#7CBF68",
+                "#81C784",
+                "#8BC34A",
+                "#9CCC65",
+                "#9CCC65"
+            );
+
+            InfoLabel.Text =
+                "🌷 Kevad – loodus ärkab";
+
             return;
+        }
 
-        Frame? apple = appleName switch
+
+        // =====================================================
+        // SUVI
+        // =====================================================
+
+        if (month >= 6 &&
+            month <= 8)
         {
-            "Apple1" => Apple1,
-            "Apple2" => Apple2,
-            "Apple3" => Apple3,
-            _ => null
-        };
+            TreeArea.BackgroundColor =
+                Color.FromArgb("#87CEEB");
 
-        if (apple is null || !apple.IsVisible)
+            MainLayout.BackgroundColor =
+                Color.FromArgb("#E3F2FD");
+
+            GrassBack.Color =
+                Color.FromArgb("#8BC34A");
+
+            GrassFront.Color =
+                Color.FromArgb("#689F38");
+
+            SummerLayer.IsVisible = true;
+
+            Sun.Opacity = 1;
+
+            Cloud1.Opacity = 0.55;
+            Cloud2.Opacity = 0.40;
+
+            SetCrownColors(
+                "#2E7D32",
+                "#388E3C",
+                "#43A047",
+                "#4CAF50",
+                "#66BB6A",
+                "#66BB6A"
+            );
+
+            ResetApples(true);
+
+            InfoLabel.Text =
+                "☀️ Suvi – puu on roheline ja õunad valmivad";
+
             return;
+        }
 
-        InfoLabel.Text = "Õun kukub puu otsast!";
+
+        // =====================================================
+        // SÜGIS
+        // =====================================================
+
+        TreeArea.BackgroundColor =
+            Color.FromArgb("#E9B872");
+
+        MainLayout.BackgroundColor =
+            Color.FromArgb("#FFF3E0");
+
+        GrassBack.Color =
+            Color.FromArgb("#A4A65A");
+
+        GrassFront.Color =
+            Color.FromArgb("#827C3C");
+
+        AutumnLayer.IsVisible = true;
+
+        Sun.Opacity = 0.60;
+
+        SetCrownColors(
+            "#E65100",
+            "#EF6C00",
+            "#F57C00",
+            "#FB8C00",
+            "#F9A825",
+            "#FFB300"
+        );
+
+        InfoLabel.Text =
+            "🍂 Sügis – lehed langevad";
+
+        StartAutumnAnimation();
+    }
+
+
+    // =========================================================
+    // KROONI VÄRVID
+    // =========================================================
+
+    private void SetCrownColors(
+        string left,
+        string right,
+        string center,
+        string top,
+        string topLeft,
+        string topRight)
+    {
+        CrownLeft.BackgroundColor =
+            Color.FromArgb(left);
+
+        CrownRight.BackgroundColor =
+            Color.FromArgb(right);
+
+        CrownCenter.BackgroundColor =
+            Color.FromArgb(center);
+
+        CrownTop.BackgroundColor =
+            Color.FromArgb(top);
+
+        CrownTopLeft.BackgroundColor =
+            Color.FromArgb(topLeft);
+
+        CrownTopRight.BackgroundColor =
+            Color.FromArgb(topRight);
+    }
+
+
+    // =========================================================
+    // LUME ANIMATSIOON
+    // =========================================================
+
+    private void StartSnowAnimation()
+    {
+        seasonAnimationCancellation =
+            new CancellationTokenSource();
+
+        CancellationToken token =
+            seasonAnimationCancellation.Token;
+
+        _ = AnimateSnowflake(Snow1, 0, token);
+        _ = AnimateSnowflake(Snow2, 250, token);
+        _ = AnimateSnowflake(Snow3, 500, token);
+        _ = AnimateSnowflake(Snow4, 750, token);
+        _ = AnimateSnowflake(Snow5, 1000, token);
+        _ = AnimateSnowflake(Snow6, 1250, token);
+        _ = AnimateSnowflake(Snow7, 1500, token);
+        _ = AnimateSnowflake(Snow8, 1750, token);
+    }
+
+
+    private async Task AnimateSnowflake(
+        VisualElement snowflake,
+        int startDelay,
+        CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(startDelay, token);
+
+            while (!token.IsCancellationRequested)
+            {
+                snowflake.TranslationY = 0;
+                snowflake.TranslationX = 0;
+
+                snowflake.Opacity =
+                    0.55 + random.NextDouble() * 0.45;
+
+
+                double x =
+                    random.Next(-35, 36);
+
+                uint duration =
+                    (uint)random.Next(1800, 3200);
+
+
+                await snowflake.TranslateToAsync(
+                    x,
+                    330,
+                    duration,
+                    Easing.Linear);
+
+
+                if (token.IsCancellationRequested)
+                    return;
+
+
+                snowflake.TranslationY = 0;
+                snowflake.TranslationX = 0;
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+
+    // =========================================================
+    // SÜGISLEHTEDE ANIMATSIOON
+    // =========================================================
+
+    private void StartAutumnAnimation()
+    {
+        seasonAnimationCancellation =
+            new CancellationTokenSource();
+
+        CancellationToken token =
+            seasonAnimationCancellation.Token;
+
+        _ = AnimateAutumnLeaf(
+            AutumnLeaf1,
+            0,
+            token);
+
+        _ = AnimateAutumnLeaf(
+            AutumnLeaf2,
+            400,
+            token);
+
+        _ = AnimateAutumnLeaf(
+            AutumnLeaf3,
+            800,
+            token);
+
+        _ = AnimateAutumnLeaf(
+            AutumnLeaf4,
+            1200,
+            token);
+    }
+
+
+    private async Task AnimateAutumnLeaf(
+        VisualElement leaf,
+        int delay,
+        CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(delay, token);
+
+            while (!token.IsCancellationRequested)
+            {
+                leaf.TranslationX = 0;
+                leaf.TranslationY = 0;
+                leaf.Rotation = 0;
+
+                double x =
+                    random.Next(-70, 71);
+
+                uint duration =
+                    (uint)random.Next(1900, 3000);
+
+
+                await Task.WhenAll(
+                    leaf.TranslateToAsync(
+                        x,
+                        300,
+                        duration,
+                        Easing.Linear),
+
+                    leaf.RotateToAsync(
+                        360,
+                        duration,
+                        Easing.Linear)
+                );
+
+
+                if (token.IsCancellationRequested)
+                    return;
+
+
+                leaf.TranslationX = 0;
+                leaf.TranslationY = 0;
+                leaf.Rotation = 0;
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+
+    // =========================================================
+    // ÕUNAD
+    // =========================================================
+
+    private async void OnAppleTapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        string? appleName =
+            e.Parameter as string;
+
+
+        Border? apple =
+            appleName switch
+            {
+                "Apple1" => Apple1,
+                "Apple2" => Apple2,
+                "Apple3" => Apple3,
+                _ => null
+            };
+
+
+        if (apple is null ||
+            !apple.IsVisible)
+        {
+            return;
+        }
+
+
+        InfoLabel.Text =
+            "🍎 Õun kukkus puult!";
+
 
         await Task.WhenAll(
-            apple.TranslateTo(0, 190, GetDuration()),
-            apple.FadeTo(0, GetDuration())
+            apple.TranslateToAsync(
+                0,
+                210,
+                650,
+                Easing.CubicIn),
+
+            apple.RotateToAsync(
+                300,
+                650),
+
+            apple.FadeToAsync(
+                0,
+                650)
         );
+
 
         apple.IsVisible = false;
     }
 
-    private void RestoreApples()
+
+    private void ResetApples(bool visible)
     {
-        foreach (Frame apple in new[] { Apple1, Apple2, Apple3 })
-        {
-            apple.IsVisible = true;
-            apple.TranslationX = 0;
-            apple.TranslationY = 0;
-            apple.Opacity = OpacitySlider.Value;
-        }
+        ResetApple(
+            Apple1,
+            visible);
+
+        ResetApple(
+            Apple2,
+            visible);
+
+        ResetApple(
+            Apple3,
+            visible);
     }
 
-    private void ResetTreePosition()
+
+    private static void ResetApple(
+        Border apple,
+        bool visible)
     {
-        TreeGroup.IsVisible = true;
-        TreeGroup.Opacity = 1;
-        TreeGroup.Rotation = 0;
-        TreeGroup.TranslationX = 0;
-        TreeGroup.TranslationY = 0;
+        apple.IsVisible = visible;
 
-        CrownLeft.BackgroundColor = normalLeafColor;
-        CrownRight.BackgroundColor = normalLeafColor;
-        CrownTop.BackgroundColor = normalTopLeafColor;
+        apple.TranslationX = 0;
+        apple.TranslationY = 0;
 
+        apple.Rotation = 0;
+        apple.Opacity = 1;
+    }
+
+
+    // =========================================================
+    // KIHTIDE PEITMINE
+    // =========================================================
+
+    private void HideSeasonLayers()
+    {
+        WinterLayer.IsVisible = false;
+        SpringLayer.IsVisible = false;
+        SummerLayer.IsVisible = false;
+        AutumnLayer.IsVisible = false;
+
+        SnowGround.IsVisible = false;
+
+        Cloud1.Opacity = 0.75;
+        Cloud2.Opacity = 0.55;
+    }
+
+
+    private void HideActionFlowers()
+    {
         Flower1.IsVisible = false;
         Flower2.IsVisible = false;
         Flower3.IsVisible = false;
         Flower4.IsVisible = false;
     }
 
-    private uint GetDuration()
+
+    // =========================================================
+    // ANIMATSIOONI PEATAMINE
+    // =========================================================
+
+    private void StopSeasonAnimations()
     {
-        return (uint)Math.Clamp(SpeedStepper.Value, 500, 2000);
+        if (seasonAnimationCancellation is null)
+            return;
+
+        seasonAnimationCancellation.Cancel();
+
+        seasonAnimationCancellation.Dispose();
+
+        seasonAnimationCancellation = null;
+    }
+
+
+    // =========================================================
+    // PUU TAASTAMINE
+    // =========================================================
+
+    private void ResetTreeTransform()
+    {
+        TreeContainer.Scale = 1;
+
+        TreeContainer.Rotation = 0;
+
+        TreeContainer.TranslationX = 0;
+        TreeContainer.TranslationY = 0;
+
+        TreeContainer.AnchorX = 0.5;
+        TreeContainer.AnchorY = 1;
+    }
+
+
+    // =========================================================
+    // KIIRUS
+    // =========================================================
+
+    private uint GetAnimationSpeed()
+    {
+        return (uint)SpeedStepper.Value;
+    }
+
+
+    // =========================================================
+    // LEHELT LAHKUMINE
+    // =========================================================
+
+    protected override void OnDisappearing()
+    {
+        StopSeasonAnimations();
+
+        base.OnDisappearing();
     }
 }

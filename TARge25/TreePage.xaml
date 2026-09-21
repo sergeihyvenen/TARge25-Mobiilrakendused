@@ -1,174 +1,906 @@
 <?xml version="1.0" encoding="utf-8" ?>
+
 <ContentPage
     x:Class="TARge25.TreePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Puu">
+    Title="Puu hooajad"
+    BackgroundColor="#F4F7F2">
 
     <ScrollView>
-        <VerticalStackLayout Padding="18" Spacing="14">
+
+        <VerticalStackLayout
+            x:Name="MainLayout"
+            Padding="18"
+            Spacing="16"
+            BackgroundColor="#E3F2FD">
+
+            <!-- PEALKIRI -->
 
             <Label
                 Text="🌳 Puu hooajad ja elutsükkel"
                 FontSize="28"
                 FontAttributes="Bold"
+                TextColor="#234B32"
                 HorizontalTextAlignment="Center" />
 
-            <!-- Puu joonistatakse AbsoluteLayout abil täpsete koordinaatidega. -->
-            <AbsoluteLayout
-                x:Name="Scene"
-                WidthRequest="360"
-                HeightRequest="420"
-                HorizontalOptions="Center"
-                BackgroundColor="#BDE3FF">
+            <Label
+                Text="Vali tegevus, kuupäev ja kellaaeg"
+                FontSize="14"
+                TextColor="#607D6B"
+                HorizontalTextAlignment="Center" />
 
-                <Label
-                    x:Name="SunMoonLabel"
-                    Text="☀️"
-                    FontSize="44"
-                    AbsoluteLayout.LayoutBounds="285,20,60,60"
-                    AbsoluteLayout.LayoutFlags="None" />
 
-                <BoxView
-                    Color="#9ACD72"
-                    AbsoluteLayout.LayoutBounds="0,360,360,60"
-                    AbsoluteLayout.LayoutFlags="None" />
+            <!-- ================================================= -->
+            <!-- LOODUS -->
+            <!-- ================================================= -->
 
-                <!-- Kõik puu osad on ühes grupis, et neid saaks koos animeerida. -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#CAD8CA"
+                StrokeThickness="1">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="24" />
+                </Border.StrokeShape>
+
+
                 <AbsoluteLayout
-                    x:Name="TreeGroup"
-                    AbsoluteLayout.LayoutBounds="30,20,300,350"
-                    AbsoluteLayout.LayoutFlags="None">
+                    x:Name="TreeArea"
+                    HeightRequest="470"
+                    BackgroundColor="#87CEEB">
 
-                    <!-- Puutüvi -->
+
+                    <!-- PÄIKE -->
+
+                    <Border
+                        x:Name="Sun"
+                        WidthRequest="72"
+                        HeightRequest="72"
+                        BackgroundColor="#FFD54F"
+                        Stroke="#FFC107"
+                        StrokeThickness="2"
+                        AbsoluteLayout.LayoutBounds="0.84,0.08,72,72"
+                        AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="36" />
+                        </Border.StrokeShape>
+
+                    </Border>
+
+
+                    <!-- PILVED -->
+
+                    <Label
+                        x:Name="Cloud1"
+                        Text="☁️"
+                        FontSize="55"
+                        Opacity="0.65"
+                        AbsoluteLayout.LayoutBounds="0.10,0.08,90,70"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Cloud2"
+                        Text="☁️"
+                        FontSize="38"
+                        Opacity="0.45"
+                        AbsoluteLayout.LayoutBounds="0.70,0.23,70,55"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+
+                    <!-- MURU -->
+
                     <BoxView
-                        x:Name="Trunk"
-                        Color="#7A4B24"
-                        AbsoluteLayout.LayoutBounds="130,185,42,155"
-                        AbsoluteLayout.LayoutFlags="None" />
+                        x:Name="GrassBack"
+                        Color="#8BC34A"
+                        AbsoluteLayout.LayoutBounds="0,1,1,100"
+                        AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
 
-                    <!-- Lehestik -->
-                    <Frame
-                        x:Name="CrownLeft"
-                        WidthRequest="145"
-                        HeightRequest="145"
-                        Padding="0"
-                        CornerRadius="72"
-                        HasShadow="True"
-                        BackgroundColor="#49A942"
-                        BorderColor="#2F7D32"
-                        AbsoluteLayout.LayoutBounds="25,90,145,145"
-                        AbsoluteLayout.LayoutFlags="None" />
+                    <BoxView
+                        x:Name="GrassFront"
+                        Color="#689F38"
+                        AbsoluteLayout.LayoutBounds="0,1,1,50"
+                        AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
 
-                    <Frame
-                        x:Name="CrownRight"
-                        WidthRequest="145"
-                        HeightRequest="145"
-                        Padding="0"
-                        CornerRadius="72"
-                        HasShadow="True"
-                        BackgroundColor="#49A942"
-                        BorderColor="#2F7D32"
-                        AbsoluteLayout.LayoutBounds="130,90,145,145"
-                        AbsoluteLayout.LayoutFlags="None" />
 
-                    <Frame
-                        x:Name="CrownTop"
-                        WidthRequest="155"
-                        HeightRequest="155"
-                        Padding="0"
-                        CornerRadius="78"
-                        HasShadow="True"
-                        BackgroundColor="#55B94D"
-                        BorderColor="#2F7D32"
-                        AbsoluteLayout.LayoutBounds="72,35,155,155"
-                        AbsoluteLayout.LayoutFlags="None" />
+                    <!-- TALVINE LUMI MAAS -->
 
-                    <!-- Õied on alguses peidetud ja ilmuvad tegevusega Õitse. -->
-                    <Frame x:Name="Flower1" IsVisible="False" WidthRequest="26" HeightRequest="26" Padding="0" CornerRadius="13" BackgroundColor="HotPink" BorderColor="White" AbsoluteLayout.LayoutBounds="78,85,26,26" AbsoluteLayout.LayoutFlags="None" />
-                    <Frame x:Name="Flower2" IsVisible="False" WidthRequest="26" HeightRequest="26" Padding="0" CornerRadius="13" BackgroundColor="LightPink" BorderColor="White" AbsoluteLayout.LayoutBounds="185,82,26,26" AbsoluteLayout.LayoutFlags="None" />
-                    <Frame x:Name="Flower3" IsVisible="False" WidthRequest="26" HeightRequest="26" Padding="0" CornerRadius="13" BackgroundColor="DeepPink" BorderColor="White" AbsoluteLayout.LayoutBounds="132,55,26,26" AbsoluteLayout.LayoutFlags="None" />
-                    <Frame x:Name="Flower4" IsVisible="False" WidthRequest="26" HeightRequest="26" Padding="0" CornerRadius="13" BackgroundColor="LightPink" BorderColor="White" AbsoluteLayout.LayoutBounds="145,145,26,26" AbsoluteLayout.LayoutFlags="None" />
+                    <BoxView
+                        x:Name="SnowGround"
+                        IsVisible="False"
+                        Color="#F5FAFF"
+                        AbsoluteLayout.LayoutBounds="0,1,1,90"
+                        AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
 
-                    <!-- Loovuse lisa: interaktiivsed õunad TapGestureRecognizer abil. -->
-                    <Frame x:Name="Apple1" WidthRequest="28" HeightRequest="28" Padding="0" CornerRadius="14" BackgroundColor="Red" BorderColor="DarkRed" AbsoluteLayout.LayoutBounds="82,135,28,28" AbsoluteLayout.LayoutFlags="None">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnAppleTapped" CommandParameter="Apple1" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
 
-                    <Frame x:Name="Apple2" WidthRequest="28" HeightRequest="28" Padding="0" CornerRadius="14" BackgroundColor="Red" BorderColor="DarkRed" AbsoluteLayout.LayoutBounds="185,135,28,28" AbsoluteLayout.LayoutFlags="None">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnAppleTapped" CommandParameter="Apple2" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
+                    <!-- PUU VARI -->
 
-                    <Frame x:Name="Apple3" WidthRequest="28" HeightRequest="28" Padding="0" CornerRadius="14" BackgroundColor="Crimson" BorderColor="DarkRed" AbsoluteLayout.LayoutBounds="137,105,28,28" AbsoluteLayout.LayoutFlags="None">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnAppleTapped" CommandParameter="Apple3" />
-                        </Frame.GestureRecognizers>
-                    </Frame>
+                    <Border
+                        WidthRequest="210"
+                        HeightRequest="26"
+                        BackgroundColor="#50000000"
+                        Opacity="0.25"
+                        StrokeThickness="0"
+                        AbsoluteLayout.LayoutBounds="0.5,0.94,210,26"
+                        AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="13" />
+                        </Border.StrokeShape>
+
+                    </Border>
+
+
+                    <!-- ================================================= -->
+                    <!-- PUU -->
+                    <!-- ================================================= -->
+
+                    <AbsoluteLayout
+                        x:Name="TreeContainer"
+                        WidthRequest="340"
+                        HeightRequest="400"
+                        AnchorX="0.5"
+                        AnchorY="1"
+                        AbsoluteLayout.LayoutBounds="0.5,0.95,340,400"
+                        AbsoluteLayout.LayoutFlags="PositionProportional">
+
+
+                        <!-- OKSAD -->
+
+                        <BoxView
+                            Color="#6D4C41"
+                            CornerRadius="8"
+                            Rotation="-48"
+                            AbsoluteLayout.LayoutBounds="100,180,20,115" />
+
+                        <BoxView
+                            Color="#6D4C41"
+                            CornerRadius="8"
+                            Rotation="48"
+                            AbsoluteLayout.LayoutBounds="220,180,20,115" />
+
+                        <BoxView
+                            Color="#795548"
+                            CornerRadius="7"
+                            Rotation="-28"
+                            AbsoluteLayout.LayoutBounds="137,145,16,95" />
+
+                        <BoxView
+                            Color="#795548"
+                            CornerRadius="7"
+                            Rotation="28"
+                            AbsoluteLayout.LayoutBounds="188,145,16,95" />
+
+
+                        <!-- TÜVI -->
+
+                        <Border
+                            x:Name="Trunk"
+                            WidthRequest="68"
+                            HeightRequest="190"
+                            BackgroundColor="#8D6E63"
+                            Stroke="#5D4037"
+                            StrokeThickness="3"
+                            AbsoluteLayout.LayoutBounds="136,195,68,190">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="19" />
+                            </Border.StrokeShape>
+
+                            <Grid>
+
+                                <BoxView
+                                    WidthRequest="4"
+                                    HeightRequest="135"
+                                    Color="#6D4C41"
+                                    Opacity="0.35"
+                                    Rotation="5"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+
+                                <BoxView
+                                    WidthRequest="4"
+                                    HeightRequest="100"
+                                    Color="#5D4037"
+                                    Opacity="0.25"
+                                    Rotation="-8"
+                                    HorizontalOptions="Start"
+                                    VerticalOptions="Center"
+                                    Margin="15,0,0,0" />
+
+                                <BoxView
+                                    WidthRequest="4"
+                                    HeightRequest="110"
+                                    Color="#5D4037"
+                                    Opacity="0.25"
+                                    Rotation="8"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    Margin="0,0,15,0" />
+
+                            </Grid>
+
+                        </Border>
+
+
+                        <!-- ================================================= -->
+                        <!-- LEHESTIK -->
+                        <!-- ================================================= -->
+
+                        <Grid
+                            x:Name="Foliage"
+                            WidthRequest="330"
+                            HeightRequest="245"
+                            AbsoluteLayout.LayoutBounds="5,0,330,245">
+
+
+                            <Border
+                                x:Name="CrownLeft"
+                                WidthRequest="160"
+                                HeightRequest="150"
+                                BackgroundColor="#2E7D32"
+                                Stroke="#1B5E20"
+                                StrokeThickness="2"
+                                HorizontalOptions="Start"
+                                VerticalOptions="End">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="76" />
+                                </Border.StrokeShape>
+
+                            </Border>
+
+
+                            <Border
+                                x:Name="CrownRight"
+                                WidthRequest="160"
+                                HeightRequest="150"
+                                BackgroundColor="#388E3C"
+                                Stroke="#1B5E20"
+                                StrokeThickness="2"
+                                HorizontalOptions="End"
+                                VerticalOptions="End">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="76" />
+                                </Border.StrokeShape>
+
+                            </Border>
+
+
+                            <Border
+                                x:Name="CrownCenter"
+                                WidthRequest="195"
+                                HeightRequest="160"
+                                BackgroundColor="#43A047"
+                                Stroke="#2E7D32"
+                                StrokeThickness="2"
+                                HorizontalOptions="Center"
+                                VerticalOptions="End"
+                                Margin="0,0,0,20">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="80" />
+                                </Border.StrokeShape>
+
+                            </Border>
+
+
+                            <Border
+                                x:Name="CrownTop"
+                                WidthRequest="170"
+                                HeightRequest="165"
+                                BackgroundColor="#4CAF50"
+                                Stroke="#2E7D32"
+                                StrokeThickness="2"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Start">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="84" />
+                                </Border.StrokeShape>
+
+                            </Border>
+
+
+                            <Border
+                                x:Name="CrownTopLeft"
+                                WidthRequest="125"
+                                HeightRequest="120"
+                                BackgroundColor="#66BB6A"
+                                Stroke="#43A047"
+                                StrokeThickness="2"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Start"
+                                Margin="25,40,0,0">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="62" />
+                                </Border.StrokeShape>
+
+                            </Border>
+
+
+                            <Border
+                                x:Name="CrownTopRight"
+                                WidthRequest="125"
+                                HeightRequest="120"
+                                BackgroundColor="#66BB6A"
+                                Stroke="#43A047"
+                                StrokeThickness="2"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                Margin="0,40,25,0">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="62" />
+                                </Border.StrokeShape>
+
+                            </Border>
+
+                        </Grid>
+
+
+                        <!-- ================================================= -->
+                        <!-- ÕIED - PÄRIS RINGID -->
+                        <!-- ================================================= -->
+
+                        <Ellipse
+                            x:Name="Flower1"
+                            WidthRequest="26"
+                            HeightRequest="26"
+                            Fill="#FF80AB"
+                            Stroke="White"
+                            StrokeThickness="2"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="72,90,26,26" />
+
+                        <Ellipse
+                            x:Name="Flower2"
+                            WidthRequest="26"
+                            HeightRequest="26"
+                            Fill="#F48FB1"
+                            Stroke="White"
+                            StrokeThickness="2"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="145,48,26,26" />
+
+                        <Ellipse
+                            x:Name="Flower3"
+                            WidthRequest="26"
+                            HeightRequest="26"
+                            Fill="#FF80AB"
+                            Stroke="White"
+                            StrokeThickness="2"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="242,90,26,26" />
+
+                        <Ellipse
+                            x:Name="Flower4"
+                            WidthRequest="26"
+                            HeightRequest="26"
+                            Fill="#F8BBD0"
+                            Stroke="White"
+                            StrokeThickness="2"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="188,145,26,26" />
+
+
+                        <!-- ================================================= -->
+                        <!-- ÕUNAD -->
+                        <!-- ================================================= -->
+
+                        <Border
+                            x:Name="Apple1"
+                            WidthRequest="25"
+                            HeightRequest="25"
+                            BackgroundColor="#E53935"
+                            Stroke="#B71C1C"
+                            StrokeThickness="1"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="100,125,25,25">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="13" />
+                            </Border.StrokeShape>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnAppleTapped"
+                                    CommandParameter="Apple1" />
+                            </Border.GestureRecognizers>
+
+                        </Border>
+
+
+                        <Border
+                            x:Name="Apple2"
+                            WidthRequest="25"
+                            HeightRequest="25"
+                            BackgroundColor="#D32F2F"
+                            Stroke="#B71C1C"
+                            StrokeThickness="1"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="215,115,25,25">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="13" />
+                            </Border.StrokeShape>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnAppleTapped"
+                                    CommandParameter="Apple2" />
+                            </Border.GestureRecognizers>
+
+                        </Border>
+
+
+                        <Border
+                            x:Name="Apple3"
+                            WidthRequest="25"
+                            HeightRequest="25"
+                            BackgroundColor="#C62828"
+                            Stroke="#B71C1C"
+                            StrokeThickness="1"
+                            IsVisible="False"
+                            AbsoluteLayout.LayoutBounds="165,160,25,25">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="13" />
+                            </Border.StrokeShape>
+
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Tapped="OnAppleTapped"
+                                    CommandParameter="Apple3" />
+                            </Border.GestureRecognizers>
+
+                        </Border>
+
+                    </AbsoluteLayout>
+
+
+                    <!-- ================================================= -->
+                    <!-- TALV -->
+                    <!-- ================================================= -->
+
+                    <AbsoluteLayout
+                        x:Name="WinterLayer"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All">
+
+                        <Label
+                            x:Name="Snow1"
+                            Text="❄"
+                            FontSize="25"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.08,0.05,35,35"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow2"
+                            Text="❄"
+                            FontSize="18"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.20,0.12,30,30"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow3"
+                            Text="❄"
+                            FontSize="29"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.34,0.04,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow4"
+                            Text="❄"
+                            FontSize="21"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.47,0.15,30,30"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow5"
+                            Text="❄"
+                            FontSize="27"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.60,0.05,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow6"
+                            Text="❄"
+                            FontSize="19"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.73,0.14,30,30"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow7"
+                            Text="❄"
+                            FontSize="28"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.84,0.04,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="Snow8"
+                            Text="❄"
+                            FontSize="22"
+                            TextColor="White"
+                            AbsoluteLayout.LayoutBounds="0.93,0.18,35,35"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    </AbsoluteLayout>
+
+
+                    <!-- ================================================= -->
+                    <!-- KEVAD -->
+                    <!-- ================================================= -->
+
+                    <AbsoluteLayout
+                        x:Name="SpringLayer"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All">
+
+                        <Label
+                            Text="🌷"
+                            FontSize="29"
+                            AbsoluteLayout.LayoutBounds="0.12,0.90,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌼"
+                            FontSize="27"
+                            AbsoluteLayout.LayoutBounds="0.22,0.93,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌸"
+                            FontSize="26"
+                            AbsoluteLayout.LayoutBounds="0.79,0.91,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌷"
+                            FontSize="29"
+                            AbsoluteLayout.LayoutBounds="0.88,0.94,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    </AbsoluteLayout>
+
+
+                    <!-- ================================================= -->
+                    <!-- SUVI -->
+                    <!-- ================================================= -->
+
+                    <AbsoluteLayout
+                        x:Name="SummerLayer"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All">
+
+                        <Label
+                            Text="🦋"
+                            FontSize="30"
+                            AbsoluteLayout.LayoutBounds="0.17,0.31,45,45"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🦋"
+                            FontSize="25"
+                            AbsoluteLayout.LayoutBounds="0.80,0.37,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌻"
+                            FontSize="30"
+                            AbsoluteLayout.LayoutBounds="0.13,0.91,45,45"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            Text="🌻"
+                            FontSize="30"
+                            AbsoluteLayout.LayoutBounds="0.84,0.91,45,45"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    </AbsoluteLayout>
+
+
+                    <!-- ================================================= -->
+                    <!-- SÜGIS -->
+                    <!-- ================================================= -->
+
+                    <AbsoluteLayout
+                        x:Name="AutumnLayer"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All">
+
+                        <Label
+                            x:Name="AutumnLeaf1"
+                            Text="🍂"
+                            FontSize="25"
+                            AbsoluteLayout.LayoutBounds="0.15,0.20,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="AutumnLeaf2"
+                            Text="🍁"
+                            FontSize="27"
+                            AbsoluteLayout.LayoutBounds="0.30,0.10,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="AutumnLeaf3"
+                            Text="🍂"
+                            FontSize="23"
+                            AbsoluteLayout.LayoutBounds="0.65,0.16,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                        <Label
+                            x:Name="AutumnLeaf4"
+                            Text="🍁"
+                            FontSize="28"
+                            AbsoluteLayout.LayoutBounds="0.82,0.08,40,40"
+                            AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    </AbsoluteLayout>
+
                 </AbsoluteLayout>
-            </AbsoluteLayout>
 
-            <Label
-                x:Name="InfoLabel"
-                Text="Vali tegevus ja vajuta KÄIVITA."
-                FontSize="17"
-                FontAttributes="Bold"
-                HorizontalTextAlignment="Center" />
+            </Border>
 
-            <Picker x:Name="ActionPicker" Title="Vali tegevus">
-                <Picker.Items>
-                    <x:String>Kasva</x:String>
-                    <x:String>Õitse</x:String>
-                    <x:String>Värise</x:String>
-                    <x:String>Langeta</x:String>
-                </Picker.Items>
-            </Picker>
 
-            <Button
-                Text="KÄIVITA"
-                HeightRequest="52"
-                Clicked="OnActionClicked" />
+            <!-- ================================================= -->
+            <!-- INFO -->
+            <!-- ================================================= -->
 
-            <Label x:Name="OpacityLabel" Text="Lehestiku läbipaistvus: 100%" />
-            <Slider
-                x:Name="OpacitySlider"
-                Minimum="0"
-                Maximum="1"
-                Value="1"
-                ValueChanged="OnOpacityChanged" />
+            <Border
+                BackgroundColor="#E8F5E9"
+                Stroke="#A5D6A7"
+                StrokeThickness="1"
+                Padding="13">
 
-            <HorizontalStackLayout Spacing="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+
                 <Label
-                    x:Name="SpeedLabel"
-                    Text="Animatsiooni aeg: 1000 ms"
-                    VerticalOptions="Center" />
-                <Stepper
-                    x:Name="SpeedStepper"
-                    Minimum="500"
-                    Maximum="2000"
-                    Increment="250"
-                    Value="1000"
-                    ValueChanged="OnSpeedChanged" />
-            </HorizontalStackLayout>
+                    x:Name="InfoLabel"
+                    Text="Vali tegevus"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="#1B5E20"
+                    HorizontalTextAlignment="Center" />
 
-            <Label Text="Virtuaalne kuupäev:" FontAttributes="Bold" />
-            <DatePicker
-                x:Name="SeasonDatePicker"
-                DateSelected="OnDateSelected" />
+            </Border>
 
-            <Label Text="Virtuaalne kellaaeg:" FontAttributes="Bold" />
-            <TimePicker
-                x:Name="WorkTimePicker"
-                Time="12:00:00" />
 
-            <Label
-                Text="Langetamine on lubatud ainult talvel (12, 1, 2) ja valgel ajal 08:00–17:00. Õunu saab puudutada."
-                FontSize="13"
-                TextColor="DimGray" />
+            <!-- ================================================= -->
+            <!-- TEGEVUS -->
+            <!-- ================================================= -->
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#DCE5DD"
+                StrokeThickness="1"
+                Padding="16">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="⚙️ Tegevus"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#263238" />
+
+                    <Picker
+                        x:Name="ActionPicker"
+                        Title="Vali tegevus">
+
+                        <Picker.Items>
+                            <x:String>Kasva</x:String>
+                            <x:String>Õitse</x:String>
+                            <x:String>Värise</x:String>
+                            <x:String>Langeta</x:String>
+                        </Picker.Items>
+
+                    </Picker>
+
+                    <Button
+                        Text="KÄIVITA"
+                        HeightRequest="50"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        BackgroundColor="#2E7D32"
+                        TextColor="White"
+                        Clicked="OnActionClicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- OPACITY -->
+            <!-- ================================================= -->
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#DCE5DD"
+                StrokeThickness="1"
+                Padding="16">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="8">
+
+                    <Label
+                        Text="🍃 Lehestiku läbipaistvus"
+                        FontSize="17"
+                        FontAttributes="Bold"
+                        TextColor="#263238" />
+
+                    <Slider
+                        x:Name="OpacitySlider"
+                        Minimum="0"
+                        Maximum="1"
+                        Value="1"
+                        MinimumTrackColor="#43A047"
+                        MaximumTrackColor="#CFD8DC"
+                        ThumbColor="#2E7D32"
+                        ValueChanged="OnOpacityChanged" />
+
+                    <Label
+                        x:Name="OpacityLabel"
+                        Text="Opacity: 1.00"
+                        FontSize="13"
+                        TextColor="#607D8B" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- SPEED -->
+            <!-- ================================================= -->
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#DCE5DD"
+                StrokeThickness="1"
+                Padding="16">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="10">
+
+                    <Label
+                        Text="⏱ Animatsiooni kiirus"
+                        FontSize="17"
+                        FontAttributes="Bold"
+                        TextColor="#263238" />
+
+                    <HorizontalStackLayout
+                        Spacing="20"
+                        VerticalOptions="Center">
+
+                        <Stepper
+                            x:Name="SpeedStepper"
+                            Minimum="500"
+                            Maximum="2000"
+                            Increment="250"
+                            Value="1000"
+                            ValueChanged="OnSpeedChanged" />
+
+                        <Label
+                            x:Name="SpeedLabel"
+                            Text="1000 ms – keskmine"
+                            FontAttributes="Bold"
+                            VerticalOptions="Center"
+                            TextColor="#2E7D32" />
+
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- DATE + TIME -->
+            <!-- ================================================= -->
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#DCE5DD"
+                StrokeThickness="1"
+                Padding="16"
+                Margin="0,0,0,20">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="📅 Virtuaalne aeg"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#263238" />
+
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        ColumnSpacing="12">
+
+                        <VerticalStackLayout
+                            Grid.Column="0"
+                            Spacing="4">
+
+                            <Label
+                                Text="Kuupäev"
+                                FontSize="13"
+                                TextColor="#607D8B" />
+
+                            <DatePicker
+                                x:Name="SeasonDatePicker"
+                                DateSelected="OnDateSelected" />
+
+                        </VerticalStackLayout>
+
+
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Spacing="4">
+
+                            <Label
+                                Text="Kellaaeg"
+                                FontSize="13"
+                                TextColor="#607D8B" />
+
+                            <TimePicker
+                                x:Name="WorkTimePicker"
+                                Time="12:00:00" />
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+
+                    <Label
+                        Text="🪓 Langetada saab ainult talvel kell 08:00–17:00"
+                        FontSize="12"
+                        TextColor="#78909C"
+                        HorizontalTextAlignment="Center" />
+
+                </VerticalStackLayout>
+
+            </Border>
 
         </VerticalStackLayout>
+
     </ScrollView>
+
 </ContentPage>
