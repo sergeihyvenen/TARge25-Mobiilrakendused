@@ -32,7 +32,7 @@
 
 
             <!-- ================================================= -->
-            <!-- LOODUS -->
+            <!-- PUU JA LOODUS -->
             <!-- ================================================= -->
 
             <Border
@@ -224,16 +224,13 @@
                         </Border>
 
 
-                        <!-- ================================================= -->
                         <!-- LEHESTIK -->
-                        <!-- ================================================= -->
 
                         <Grid
                             x:Name="Foliage"
                             WidthRequest="330"
                             HeightRequest="245"
                             AbsoluteLayout.LayoutBounds="5,0,330,245">
-
 
                             <Border
                                 x:Name="CrownLeft"
@@ -342,9 +339,7 @@
                         </Grid>
 
 
-                        <!-- ================================================= -->
-                        <!-- ÕIED - PÄRIS RINGID -->
-                        <!-- ================================================= -->
+                        <!-- ÕIED -->
 
                         <Ellipse
                             x:Name="Flower1"
@@ -387,77 +382,63 @@
                             AbsoluteLayout.LayoutBounds="188,145,26,26" />
 
 
-                        <!-- ================================================= -->
                         <!-- ÕUNAD -->
-                        <!-- ================================================= -->
 
-                        <Border
+                        <Ellipse
                             x:Name="Apple1"
-                            WidthRequest="25"
-                            HeightRequest="25"
-                            BackgroundColor="#E53935"
+                            WidthRequest="27"
+                            HeightRequest="27"
+                            Fill="#E53935"
                             Stroke="#B71C1C"
-                            StrokeThickness="1"
+                            StrokeThickness="2"
                             IsVisible="False"
-                            AbsoluteLayout.LayoutBounds="100,125,25,25">
+                            AbsoluteLayout.LayoutBounds="100,125,27,27">
 
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="13" />
-                            </Border.StrokeShape>
-
-                            <Border.GestureRecognizers>
+                            <Ellipse.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnAppleTapped"
                                     CommandParameter="Apple1" />
-                            </Border.GestureRecognizers>
+                            </Ellipse.GestureRecognizers>
 
-                        </Border>
+                        </Ellipse>
 
 
-                        <Border
+                        <Ellipse
                             x:Name="Apple2"
-                            WidthRequest="25"
-                            HeightRequest="25"
-                            BackgroundColor="#D32F2F"
+                            WidthRequest="27"
+                            HeightRequest="27"
+                            Fill="#D32F2F"
                             Stroke="#B71C1C"
-                            StrokeThickness="1"
+                            StrokeThickness="2"
                             IsVisible="False"
-                            AbsoluteLayout.LayoutBounds="215,115,25,25">
+                            AbsoluteLayout.LayoutBounds="215,115,27,27">
 
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="13" />
-                            </Border.StrokeShape>
-
-                            <Border.GestureRecognizers>
+                            <Ellipse.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnAppleTapped"
                                     CommandParameter="Apple2" />
-                            </Border.GestureRecognizers>
+                            </Ellipse.GestureRecognizers>
 
-                        </Border>
+                        </Ellipse>
 
 
-                        <Border
+                        <Ellipse
                             x:Name="Apple3"
-                            WidthRequest="25"
-                            HeightRequest="25"
-                            BackgroundColor="#C62828"
+                            WidthRequest="27"
+                            HeightRequest="27"
+                            Fill="#C62828"
                             Stroke="#B71C1C"
-                            StrokeThickness="1"
+                            StrokeThickness="2"
                             IsVisible="False"
-                            AbsoluteLayout.LayoutBounds="165,160,25,25">
+                            AbsoluteLayout.LayoutBounds="165,160,27,27">
 
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="13" />
-                            </Border.StrokeShape>
-
-                            <Border.GestureRecognizers>
+                            <Ellipse.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnAppleTapped"
                                     CommandParameter="Apple3" />
-                            </Border.GestureRecognizers>
+                            </Ellipse.GestureRecognizers>
 
-                        </Border>
+                        </Ellipse>
 
                     </AbsoluteLayout>
 
@@ -569,12 +550,6 @@
                             AbsoluteLayout.LayoutBounds="0.79,0.91,40,40"
                             AbsoluteLayout.LayoutFlags="PositionProportional" />
 
-                        <Label
-                            Text="🌷"
-                            FontSize="29"
-                            AbsoluteLayout.LayoutBounds="0.88,0.94,40,40"
-                            AbsoluteLayout.LayoutFlags="PositionProportional" />
-
                     </AbsoluteLayout>
 
 
@@ -590,14 +565,16 @@
                         AbsoluteLayout.LayoutFlags="All">
 
                         <Label
+                            x:Name="Butterfly1"
                             Text="🦋"
                             FontSize="30"
                             AbsoluteLayout.LayoutBounds="0.17,0.31,45,45"
                             AbsoluteLayout.LayoutFlags="PositionProportional" />
 
                         <Label
+                            x:Name="Butterfly2"
                             Text="🦋"
-                            FontSize="25"
+                            FontSize="26"
                             AbsoluteLayout.LayoutBounds="0.80,0.37,40,40"
                             AbsoluteLayout.LayoutFlags="PositionProportional" />
 
@@ -657,14 +634,60 @@
 
                     </AbsoluteLayout>
 
+
+                    <!-- ================================================= -->
+                    <!-- ÖÖ KIHT -->
+                    <!-- ================================================= -->
+
+                    <BoxView
+                        x:Name="NightOverlay"
+                        BackgroundColor="#071525"
+                        Opacity="0"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1"
+                        AbsoluteLayout.LayoutFlags="All" />
+
+
+                    <!-- KUU -->
+
+                    <Label
+                        x:Name="Moon"
+                        Text="🌙"
+                        FontSize="65"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0.82,0.08,80,80"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+
+                    <!-- TÄHED -->
+
+                    <Label
+                        x:Name="Stars1"
+                        Text="✦  ✧   ✦"
+                        FontSize="22"
+                        TextColor="White"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0.13,0.07,130,50"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Stars2"
+                        Text="✧   ✦  ✧"
+                        FontSize="18"
+                        TextColor="White"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        AbsoluteLayout.LayoutBounds="0.62,0.18,120,45"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
                 </AbsoluteLayout>
 
             </Border>
 
 
-            <!-- ================================================= -->
             <!-- INFO -->
-            <!-- ================================================= -->
 
             <Border
                 BackgroundColor="#E8F5E9"
@@ -687,9 +710,7 @@
             </Border>
 
 
-            <!-- ================================================= -->
             <!-- TEGEVUS -->
-            <!-- ================================================= -->
 
             <Border
                 BackgroundColor="White"
@@ -737,9 +758,7 @@
             </Border>
 
 
-            <!-- ================================================= -->
-            <!-- OPACITY -->
-            <!-- ================================================= -->
+            <!-- LEHESTIK -->
 
             <Border
                 BackgroundColor="White"
@@ -780,9 +799,7 @@
             </Border>
 
 
-            <!-- ================================================= -->
-            <!-- SPEED -->
-            <!-- ================================================= -->
+            <!-- KIIRUS -->
 
             <Border
                 BackgroundColor="White"
@@ -828,9 +845,7 @@
             </Border>
 
 
-            <!-- ================================================= -->
-            <!-- DATE + TIME -->
-            <!-- ================================================= -->
+            <!-- AEG -->
 
             <Border
                 BackgroundColor="White"
@@ -856,8 +871,7 @@
                         ColumnSpacing="12">
 
                         <VerticalStackLayout
-                            Grid.Column="0"
-                            Spacing="4">
+                            Grid.Column="0">
 
                             <Label
                                 Text="Kuupäev"
@@ -872,8 +886,7 @@
 
 
                         <VerticalStackLayout
-                            Grid.Column="1"
-                            Spacing="4">
+                            Grid.Column="1">
 
                             <Label
                                 Text="Kellaaeg"
@@ -882,11 +895,21 @@
 
                             <TimePicker
                                 x:Name="WorkTimePicker"
-                                Time="12:00:00" />
+                                Time="12:00:00"
+                                PropertyChanged="OnTimePickerPropertyChanged" />
 
                         </VerticalStackLayout>
 
                     </Grid>
+
+
+                    <Label
+                        x:Name="TimeStatusLabel"
+                        Text="☀️ Päev"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        TextColor="#455A64"
+                        HorizontalTextAlignment="Center" />
 
 
                     <Label
