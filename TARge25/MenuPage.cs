@@ -22,17 +22,37 @@ public class MenuPage : ContentPage
         Button popupButton = CreateMenuButton("Pop-up aknad");
         Button trafficLightButton = CreateMenuButton("Valgusfoor");
 
+        // UUS NUPP
+        Button pickerGridButton =
+            CreateMenuButton("Picker, Image ja Grid");
+
+
         treeButton.Clicked += async (sender, e) =>
-            await Navigation.PushAsync(new TreePage());
+            await Navigation.PushAsync(
+                new TreePage()
+            );
 
         snowmanButton.Clicked += async (sender, e) =>
-            await Navigation.PushAsync(new LumememmPage());
+            await Navigation.PushAsync(
+                new LumememmPage()
+            );
 
         popupButton.Clicked += async (sender, e) =>
-            await Navigation.PushAsync(new PopUpPage());
+            await Navigation.PushAsync(
+                new PopUpPage()
+            );
 
         trafficLightButton.Clicked += async (sender, e) =>
-            await Navigation.PushAsync(new ValgusfoorPage());
+            await Navigation.PushAsync(
+                new ValgusfoorPage()
+            );
+
+        // UUS LEHT
+        pickerGridButton.Clicked += async (sender, e) =>
+            await Navigation.PushAsync(
+                new PickerPage()
+            );
+
 
         Content = new ScrollView
         {
@@ -40,17 +60,20 @@ public class MenuPage : ContentPage
             {
                 Padding = new Thickness(25, 10),
                 Spacing = 14,
+
                 Children =
                 {
                     titleLabel,
                     treeButton,
                     snowmanButton,
                     popupButton,
-                    trafficLightButton
+                    trafficLightButton,
+                    pickerGridButton
                 }
             }
         };
     }
+
 
     private static Button CreateMenuButton(string text)
     {
@@ -59,10 +82,12 @@ public class MenuPage : ContentPage
             Text = text,
             FontSize = 18,
             HeightRequest = 58,
-            BackgroundColor = Color.FromArgb("#D9D9D9"),
+            BackgroundColor =
+                Color.FromArgb("#D9D9D9"),
             TextColor = Colors.Black,
             CornerRadius = 8,
-            HorizontalOptions = LayoutOptions.Fill
+            HorizontalOptions =
+                LayoutOptions.Fill
         };
     }
 }

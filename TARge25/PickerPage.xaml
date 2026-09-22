@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="TARge25.PickerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Picker ja Grid"
+    BackgroundColor="#F4F6F8">
+
+    <ScrollView>
+
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="16">
+
+            <Label
+                Text="🖼️ Picker, Image ja Grid"
+                FontSize="27"
+                FontAttributes="Bold"
+                TextColor="#263238"
+                HorizontalTextAlignment="Center" />
+
+            <Label
+                x:Name="InfoLabel"
+                Text="Vali pilt või vajuta ruudule"
+                FontSize="16"
+                TextColor="#546E7A"
+                HorizontalTextAlignment="Center" />
+
+
+            <!-- PICKER -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#D8DEE3"
+                Padding="12">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+
+                <Picker
+                    x:Name="ImagePicker"
+                    Title="Vali pilt"
+                    SelectedIndexChanged="OnPickerSelectedIndexChanged">
+
+                    <Picker.Items>
+                        <x:String>tree.png</x:String>
+                        <x:String>flower.png</x:String>
+                        <x:String>sun.png</x:String>
+                        <x:String>Internetipilt</x:String>
+                    </Picker.Items>
+
+                </Picker>
+
+            </Border>
+
+
+            <!-- IMAGE -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#D8DEE3"
+                Padding="10"
+                HeightRequest="230">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+                <Image
+                    x:Name="MainImage"
+                    Aspect="AspectFit" />
+
+            </Border>
+
+
+            <!-- SWITCH PILT -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#D8DEE3"
+                Padding="14">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+
+                <Grid ColumnDefinitions="*,Auto">
+
+                    <Label
+                        Text="Kuva pilt"
+                        FontSize="17"
+                        TextColor="#263238"
+                        VerticalOptions="Center" />
+
+                    <Switch
+                        x:Name="ImageSwitch"
+                        Grid.Column="1"
+                        IsToggled="True"
+                        Toggled="OnImageSwitchToggled" />
+
+                </Grid>
+
+            </Border>
+
+
+            <!-- SWITCH GRID -->
+            <Border
+                BackgroundColor="White"
+                Stroke="#D8DEE3"
+                Padding="14">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+
+                <Grid ColumnDefinitions="*,Auto">
+
+                    <Label
+                        Text="Kuva 3x3 ruudustik"
+                        FontSize="17"
+                        TextColor="#263238"
+                        VerticalOptions="Center" />
+
+                    <Switch
+                        x:Name="GridSwitch"
+                        Grid.Column="1"
+                        IsToggled="True"
+                        Toggled="OnGridSwitchToggled" />
+
+                </Grid>
+
+            </Border>
+
+
+            <!-- 3x3 GRID -->
+            <Grid
+                x:Name="ColorGrid"
+                RowSpacing="6"
+                ColumnSpacing="6"
+                HorizontalOptions="Center">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="90" />
+                    <RowDefinition Height="90" />
+                    <RowDefinition Height="90" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="90" />
+                    <ColumnDefinition Width="90" />
+                </Grid.ColumnDefinitions>
+
+            </Grid>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

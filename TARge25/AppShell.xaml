@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <Shell
     x:Class="TARge25.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,6 +8,7 @@
     Title="TARge25">
 
     <TabBar>
+
         <ShellContent
             Title="Puu"
             ContentTemplate="{DataTemplate local:TreePage}"
@@ -26,6 +28,12 @@
             Title="Valgusfoor"
             ContentTemplate="{DataTemplate local:ValgusfoorPage}"
             Route="ValgusfoorPage" />
+
+        <ShellContent
+            Title="Picker Grid"
+            ContentTemplate="{DataTemplate local:PickerPage}"
+            Route="PickerImageGridPage" />
+
     </TabBar>
 
 </Shell>
