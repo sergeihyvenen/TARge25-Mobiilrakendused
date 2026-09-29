@@ -33,9 +33,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // KÄIVITA
-    // =========================================================
 
     private async void OnActionClicked(
         object? sender,
@@ -44,7 +42,7 @@ public partial class TreePage : ContentPage
         if (ActionPicker.SelectedItem is null)
         {
             InfoLabel.Text =
-                "⚠️ Palun vali tegevus!";
+                "Palun vali tegevus!";
 
             return;
         }
@@ -74,9 +72,8 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // KASVA
-    // =========================================================
+
 
     private async Task GrowTree()
     {
@@ -96,7 +93,7 @@ public partial class TreePage : ContentPage
 
 
         InfoLabel.Text =
-            "🌱 Puu kasvab!";
+            "Puu kasvab!";
 
 
         // Suvel kasvavad liblikad puuga samal ajal
@@ -126,7 +123,7 @@ public partial class TreePage : ContentPage
 
 
             InfoLabel.Text =
-                "🌳 Puu ja liblikad kasvasid!";
+                "Puu ja liblikad kasvasid!";
         }
         else
         {
@@ -137,14 +134,13 @@ public partial class TreePage : ContentPage
 
 
             InfoLabel.Text =
-                "🌳 Puu kasvas!";
+                "Puu kasvas!";
         }
     }
 
 
-    // =========================================================
     // ÕITSE
-    // =========================================================
+
 
     private async Task BloomTree()
     {
@@ -156,7 +152,7 @@ public partial class TreePage : ContentPage
 
 
         InfoLabel.Text =
-            "🌸 Puu õitseb!";
+            "Puu õitseb!";
 
 
         Flower1.IsVisible = true;
@@ -192,9 +188,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // VÄRISE
-    // =========================================================
 
     private async Task ShakeTree()
     {
@@ -212,7 +206,7 @@ public partial class TreePage : ContentPage
 
 
         InfoLabel.Text =
-            "💨 Puu väriseb tuules!";
+            "Puu väriseb tuules!";
 
 
         await TreeContainer.TranslateToAsync(
@@ -258,9 +252,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // LANGETA
-    // =========================================================
 
     private async Task CutTree()
     {
@@ -296,7 +288,7 @@ public partial class TreePage : ContentPage
         if (!isWinter && !isDay)
         {
             InfoLabel.Text =
-                "❌ Pimedas ja väljaspool talve puid ei langetata!";
+                "Pimedas ja väljaspool talve puid ei langetata!";
 
             return;
         }
@@ -305,7 +297,7 @@ public partial class TreePage : ContentPage
         if (!isWinter)
         {
             InfoLabel.Text =
-                "❌ Puid tohib langetada ainult talvel!";
+                "Puid tohib langetada ainult talvel!";
 
             return;
         }
@@ -314,7 +306,7 @@ public partial class TreePage : ContentPage
         if (!isDay)
         {
             InfoLabel.Text =
-                "❌ Tööd tohib teha ainult kell 08:00–17:00!";
+                "Tööd tohib teha ainult kell 08:00–17:00!";
 
             return;
         }
@@ -328,7 +320,7 @@ public partial class TreePage : ContentPage
 
 
         InfoLabel.Text =
-            "🪓 Puu langeb!";
+            "Puu langeb!";
 
 
         await TreeContainer.RotateToAsync(
@@ -338,9 +330,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // ÕUNAD
-    // =========================================================
 
     private async void OnAppleTapped(
         object? sender,
@@ -373,7 +363,7 @@ public partial class TreePage : ContentPage
 
 
         InfoLabel.Text =
-            "🍎 Õun kukub puult!";
+            "Õun kukub puult!";
 
 
         uint duration =
@@ -405,9 +395,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // SLIDER
-    // =========================================================
 
     private void OnOpacityChanged(
         object? sender,
@@ -422,9 +410,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // KIIRUS
-    // =========================================================
 
     private void OnSpeedChanged(
         object? sender,
@@ -475,9 +461,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // KUUPÄEV
-    // =========================================================
 
     private void OnDateSelected(
         object? sender,
@@ -492,9 +476,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // KELLAAEG
-    // =========================================================
 
     private void OnTimePickerPropertyChanged(
         object? sender,
@@ -508,9 +490,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // PÄEV / ÖÖ
-    // =========================================================
 
     private void UpdateDayNight()
     {
@@ -528,9 +508,7 @@ public partial class TreePage : ContentPage
             hour < 18;
 
 
-        // =====================================================
         // PÄEV
-        // =====================================================
 
         if (isDay)
         {
@@ -564,21 +542,18 @@ public partial class TreePage : ContentPage
 
 
             TimeStatusLabel.Text =
-                "☀️ Päev – on valge";
+                "Päev – on valge";
 
 
             TimeStatusLabel.TextColor =
                 Color.FromArgb("#455A64");
         }
 
-        // =====================================================
         // ÖÖ
-        // =====================================================
 
         else
         {
-            // Ei mingit tumedat overlay'd.
-            // Lihtsalt sinine mängulik öötaevas.
+
 
             TreeArea.BackgroundColor =
                 Color.FromArgb("#3E6FA8");
@@ -611,7 +586,7 @@ public partial class TreePage : ContentPage
 
 
             TimeStatusLabel.Text =
-                "🌙 Öö – sinine tähistaevas";
+                "Öö – sinine tähistaevas";
 
 
             TimeStatusLabel.TextColor =
@@ -620,9 +595,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // PÄEVASE TAEVA VÄRV
-    // =========================================================
 
     private Color GetDaySkyColor()
     {
@@ -669,9 +642,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // TÄHED
-    // =========================================================
 
     private void ShowStars()
     {
@@ -807,9 +778,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // AASTAAJAD
-    // =========================================================
 
     private void ApplySeason(
         DateTime date)
@@ -830,9 +799,7 @@ public partial class TreePage : ContentPage
             date.Month;
 
 
-        // =====================================================
         // TALV
-        // =====================================================
 
         if (month == 12 ||
             month == 1 ||
@@ -877,16 +844,14 @@ public partial class TreePage : ContentPage
 
 
             InfoLabel.Text =
-                "❄️ Talv – sajab lund";
+                "Talv – sajab lund";
 
 
             StartSnowAnimation();
         }
 
 
-        // =====================================================
         // KEVAD
-        // =====================================================
 
         else if (month >= 3 &&
                  month <= 5)
@@ -926,13 +891,10 @@ public partial class TreePage : ContentPage
 
 
             InfoLabel.Text =
-                "🌷 Kevad – loodus ärkab";
+                "Kevad – loodus ärkab";
         }
 
-
-        // =====================================================
         // SUVI
-        // =====================================================
 
         else if (month >= 6 &&
                  month <= 8)
@@ -975,13 +937,11 @@ public partial class TreePage : ContentPage
 
 
             InfoLabel.Text =
-                "☀️ Suvi – õunad ja liblikad";
+                "Suvi – õunad ja liblikad";
         }
 
 
-        // =====================================================
         // SÜGIS
-        // =====================================================
 
         else
         {
@@ -1020,7 +980,7 @@ public partial class TreePage : ContentPage
 
 
             InfoLabel.Text =
-                "🍂 Sügis – lehed langevad";
+                "Sügis – lehed langevad";
 
 
             StartAutumnAnimation();
@@ -1031,9 +991,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // KROONI VÄRVID
-    // =========================================================
 
     private void SetCrownColors(
         string left,
@@ -1068,9 +1026,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // LUMI
-    // =========================================================
 
     private void StartSnowAnimation()
     {
@@ -1168,9 +1124,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // SÜGISLEHED
-    // =========================================================
 
     private void StartAutumnAnimation()
     {
@@ -1278,9 +1232,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // ÕUNAD RESET
-    // =========================================================
 
     private void ResetApples(
         bool visible)
@@ -1326,9 +1278,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // LIBLIKAD
-    // =========================================================
 
     private void ResetButterflies()
     {
@@ -1356,10 +1306,7 @@ public partial class TreePage : ContentPage
             0;
     }
 
-
-    // =========================================================
     // PUU RESET
-    // =========================================================
 
     private void ResetTreeTransform()
     {
@@ -1491,9 +1438,7 @@ public partial class TreePage : ContentPage
     }
 
 
-    // =========================================================
     // STOP
-    // =========================================================
 
     private void StopSeasonAnimations()
     {

@@ -4,302 +4,262 @@ public partial class ValgusfoorPage : ContentPage
 {
     private bool isTrafficLightOn = false;
     private bool isNightMode = false;
+    private bool isAutoMode = false;
 
-    private CancellationTokenSource? nightModeCancellation;
+    private CancellationTokenSource? nightCancellation;
+    private CancellationTokenSource? autoCancellation;
+
+    private readonly Color offColor =
+        Color.FromArgb("#404040");
+
 
     public ValgusfoorPage()
     {
         InitializeComponent();
 
         SetAllLightsGray();
+
         SetLightsClickable(false);
     }
 
 
     // SISSE
-    private void OnTurnOnClicked(object? sender, EventArgs e)
+
+    private void OnTurnOnClicked(
+        object? sender,
+        EventArgs e)
     {
+        StopNightMode();
+        StopAutoMode();
+
         isTrafficLightOn = true;
 
-        if (isNightMode)
-        {
-            SetLightsClickable(false);
-
-            StatusLabel.Text = "Öörežiim – kollane vilgub";
-
-            StartNightBlinking();
-            return;
-        }
-
-        // Näitame kõiki valgusfoori värve
-        RedLight.BackgroundColor = Colors.Red;
-        YellowLight.BackgroundColor = Colors.Yellow;
-        GreenLight.BackgroundColor = Colors.LimeGreen;
-
-        StatusLabel.Text = "Vali valgus";
+        // Alguses näitame kõiki kolme värvi
+        ShowNormalColors();
 
         SetLightsClickable(true);
+
+        StatusLabel.Text =
+            "Vali valgus";
+
+        StatusLabel.TextColor =
+            Color.FromArgb("#1F2937");
     }
 
 
     // VÄLJA
-    private void OnTurnOffClicked(object? sender, EventArgs e)
+
+    private void OnTurnOffClicked(
+        object? sender,
+        EventArgs e)
     {
         isTrafficLightOn = false;
 
-        StopNightBlinking();
+        StopNightMode();
+        StopAutoMode();
 
         SetAllLightsGray();
+
         SetLightsClickable(false);
 
-        StatusLabel.Text = "Lülita esmalt foor sisse";
+        StatusLabel.Text =
+            "Lülita esmalt foor sisse";
+
+        StatusLabel.TextColor =
+            Color.FromArgb("#C62828");
     }
 
 
     // PUNANE
-    private async void OnRedTapped(object? sender, TappedEventArgs e)
+
+    private async void OnRedTapped(
+        object? sender,
+        TappedEventArgs e)
     {
-        if (!isTrafficLightOn || isNightMode)
+        if (!CanSelectLight())
             return;
 
-        SetActiveLight(RedLight, Colors.Red);
+        SetSelectedLight(
+            RedLight,
+            Colors.Red);
 
-        StatusLabel.Text = "Seisa";
+        StatusLabel.Text =
+            "Seisa";
 
-        await AnimateLightAsync(RedLight);
+        StatusLabel.TextColor =
+            Colors.Red;
+
+        await AnimateLightAsync(
+            RedLight);
     }
 
 
     // KOLLANE
-    private async void OnYellowTapped(object? sender, TappedEventArgs e)
+
+    private async void OnYellowTapped(
+        object? sender,
+        TappedEventArgs e)
     {
-        if (!isTrafficLightOn || isNightMode)
+        if (!CanSelectLight())
             return;
 
-        SetActiveLight(YellowLight, Colors.Yellow);
+        SetSelectedLight(
+            YellowLight,
+            Colors.Gold);
 
-        StatusLabel.Text = "Valmista";
+        StatusLabel.Text =
+            "Valmista";
 
-        await AnimateLightAsync(YellowLight);
+        StatusLabel.TextColor =
+            Color.FromArgb("#D49B00");
+
+        await AnimateLightAsync(
+            YellowLight);
     }
 
 
     // ROHELINE
-    private async void OnGreenTapped(object? sender, TappedEventArgs e)
+
+    private async void OnGreenTapped(
+        object? sender,
+        TappedEventArgs e)
     {
-        if (!isTrafficLightOn || isNightMode)
+        if (!CanSelectLight())
             return;
 
-        SetActiveLight(GreenLight, Colors.LimeGreen);
+        SetSelectedLight(
+            GreenLight,
+            Colors.LimeGreen);
 
-        StatusLabel.Text = "Sõida";
+        StatusLabel.Text =
+            "Sõida";
 
-        await AnimateLightAsync(GreenLight);
+        StatusLabel.TextColor =
+            Color.FromArgb("#2E7D32");
+
+        await AnimateLightAsync(
+            GreenLight);
     }
 
 
-    // ÖÖREŽIIM
-    private void OnNightModeClicked(object? sender, EventArgs e)
+    // AINULT ÜKS TULI PÕLEB
+
+    private void SetSelectedLight(
+        BoxView selectedLight,
+        Color selectedColor)
     {
-        if (isNightMode)
-        {
-            DisableNightMode();
-        }
-        else
-        {
-            EnableNightMode();
-        }
+        // Kõik tuled kustuvad
+        RedLight.Color = offColor;
+        YellowLight.Color = offColor;
+        GreenLight.Color = offColor;
+
+        RedLight.Opacity = 1;
+        YellowLight.Opacity = 1;
+        GreenLight.Opacity = 1;
+
+        RedLight.Scale = 1;
+        YellowLight.Scale = 1;
+        GreenLight.Scale = 1;
+
+        // Valitud tuli süttib
+        selectedLight.Color =
+            selectedColor;
     }
 
 
-    private void EnableNightMode()
+    // KAS TULD SAAB VAJUTADA?
+
+    private bool CanSelectLight()
     {
-        isNightMode = true;
-        isTrafficLightOn = true;
-
-        NightOverlay.Opacity = 0.55;
-
-        StatusLabel.TextColor = Colors.White;
-        StatusLabel.Text = "Öörežiim – kollane vilgub";
-
-        TrafficLightBody.BackgroundColor =
-            Color.FromArgb("#101010");
-
-        NightModeButton.Text = "PÄEVAREŽIIM";
-
-        SetAllLightsDarkGray();
-
-        // Öörežiimis tulesid käsitsi vajutada ei saa
-        SetLightsClickable(false);
-
-        StartNightBlinking();
+        return isTrafficLightOn
+               && !isNightMode
+               && !isAutoMode;
     }
 
+    // ANIMATSIOON
 
-    private void DisableNightMode()
-    {
-        isNightMode = false;
-
-        StopNightBlinking();
-
-        NightOverlay.Opacity = 0;
-
-        StatusLabel.TextColor = Colors.Black;
-
-        TrafficLightBody.BackgroundColor =
-            Color.FromArgb("#202020");
-
-        NightModeButton.Text = "ÖÖREŽIIM";
-
-        if (isTrafficLightOn)
-        {
-            RedLight.BackgroundColor = Colors.Red;
-            YellowLight.BackgroundColor = Colors.Yellow;
-            GreenLight.BackgroundColor = Colors.LimeGreen;
-
-            StatusLabel.Text = "Vali valgus";
-
-            SetLightsClickable(true);
-        }
-        else
-        {
-            SetAllLightsGray();
-
-            StatusLabel.Text = "Lülita esmalt foor sisse";
-
-            SetLightsClickable(false);
-        }
-    }
-
-
-    // Kollase tule vilkumine öörežiimis
-    private void StartNightBlinking()
-    {
-        StopNightBlinking();
-
-        nightModeCancellation =
-            new CancellationTokenSource();
-
-        _ = BlinkYellowAsync(
-            nightModeCancellation.Token);
-    }
-
-
-    private void StopNightBlinking()
-    {
-        if (nightModeCancellation == null)
-            return;
-
-        nightModeCancellation.Cancel();
-        nightModeCancellation.Dispose();
-
-        nightModeCancellation = null;
-    }
-
-
-    private async Task BlinkYellowAsync(
-        CancellationToken token)
-    {
-        try
-        {
-            while (isNightMode &&
-                   isTrafficLightOn &&
-                   !token.IsCancellationRequested)
-            {
-                Color darkGray =
-                    Color.FromArgb("#303030");
-
-                RedLight.BackgroundColor = darkGray;
-                GreenLight.BackgroundColor = darkGray;
-
-                // Kollane sisse
-                YellowLight.BackgroundColor =
-                    Colors.Gold;
-
-                await AnimateLightAsync(
-                    YellowLight);
-
-                await Task.Delay(
-                    500,
-                    token);
-
-                // Kollane välja
-                YellowLight.BackgroundColor =
-                    darkGray;
-
-                await Task.Delay(
-                    500,
-                    token);
-            }
-        }
-        catch (TaskCanceledException)
-        {
-            // See on normaalne,
-            // kui öörežiim peatatakse.
-        }
-    }
-
-
-    // Aktiivseks jääb ainult valitud tuli
-    private void SetActiveLight(
-        Border activeLight,
-        Color activeColor)
-    {
-        SetAllLightsGray();
-
-        activeLight.BackgroundColor =
-            activeColor;
-    }
-
-
-    // Väike animatsioon
     private async Task AnimateLightAsync(
-        Border light)
+        VisualElement light)
     {
         await Task.WhenAll(
-            light.ScaleToAsync(1.12, 140),
-            light.FadeToAsync(0.65, 140)
+
+            light.ScaleToAsync(
+                1.15,
+                150,
+                Easing.CubicOut),
+
+            light.FadeToAsync(
+                0.65,
+                150)
         );
 
+
         await Task.WhenAll(
-            light.ScaleToAsync(1.0, 140),
-            light.FadeToAsync(1.0, 140)
+
+            light.ScaleToAsync(
+                1,
+                150,
+                Easing.CubicIn),
+
+            light.FadeToAsync(
+                1,
+                150)
         );
     }
 
 
-    // Kõik tuled halliks
+    // KÕIK VÄRVID
+
+    private void ShowNormalColors()
+    {
+        RedLight.Color =
+            Colors.Red;
+
+        YellowLight.Color =
+            Colors.Gold;
+
+        GreenLight.Color =
+            Colors.LimeGreen;
+
+
+        RedLight.Opacity = 1;
+        YellowLight.Opacity = 1;
+        GreenLight.Opacity = 1;
+
+
+        RedLight.Scale = 1;
+        YellowLight.Scale = 1;
+        GreenLight.Scale = 1;
+    }
+
+
+    // KÕIK HALLIKS
+
     private void SetAllLightsGray()
     {
-        RedLight.BackgroundColor =
+        RedLight.Color =
             Colors.Gray;
 
-        YellowLight.BackgroundColor =
+        YellowLight.Color =
             Colors.Gray;
 
-        GreenLight.BackgroundColor =
+        GreenLight.Color =
             Colors.Gray;
+
+
+        RedLight.Opacity = 1;
+        YellowLight.Opacity = 1;
+        GreenLight.Opacity = 1;
+
+
+        RedLight.Scale = 1;
+        YellowLight.Scale = 1;
+        GreenLight.Scale = 1;
     }
 
 
-    // Öörežiimi tumedad tuled
-    private void SetAllLightsDarkGray()
-    {
-        Color darkGray =
-            Color.FromArgb("#303030");
+    // KLIKKIMINE
 
-        RedLight.BackgroundColor =
-            darkGray;
-
-        YellowLight.BackgroundColor =
-            darkGray;
-
-        GreenLight.BackgroundColor =
-            darkGray;
-    }
-
-
-    // Kas tulesid saab vajutada
     private void SetLightsClickable(
         bool clickable)
     {
@@ -314,9 +274,422 @@ public partial class ValgusfoorPage : ContentPage
     }
 
 
+    // ÖÖREŽIIM
+
+    private void OnNightModeClicked(
+        object? sender,
+        EventArgs e)
+    {
+        if (!isTrafficLightOn)
+        {
+            StatusLabel.Text =
+                "Lülita esmalt foor sisse";
+
+            StatusLabel.TextColor =
+                Color.FromArgb("#C62828");
+
+            return;
+        }
+
+
+        // Kui öörežiim juba töötab,
+        // siis lülitame selle välja
+        if (isNightMode)
+        {
+            StopNightMode();
+
+            ShowNormalColors();
+
+            SetLightsClickable(true);
+
+            StatusLabel.Text =
+                "Vali valgus";
+
+            StatusLabel.TextColor =
+                Color.FromArgb("#1F2937");
+
+            return;
+        }
+
+
+        StopAutoMode();
+
+        isNightMode = true;
+
+        SetLightsClickable(false);
+
+        NightModeButton.Text =
+            "PÄEVAREŽIIM";
+
+
+        StatusLabel.Text =
+            "Öörežiim – kollane vilgub";
+
+        StatusLabel.TextColor =
+            Color.FromArgb("#C69200");
+
+
+        // Punane ja roheline kustuvad
+        RedLight.Color =
+            offColor;
+
+        GreenLight.Color =
+            offColor;
+
+
+        StartNightBlinking();
+    }
+
+
+    // KOLLANE VILGUB ÖÖSEL
+
+    private void StartNightBlinking()
+    {
+        nightCancellation =
+            new CancellationTokenSource();
+
+        CancellationToken token =
+            nightCancellation.Token;
+
+        _ = BlinkYellowAsync(token);
+    }
+
+
+    private async Task BlinkYellowAsync(
+        CancellationToken token)
+    {
+        try
+        {
+            while (isNightMode &&
+                   isTrafficLightOn &&
+                   !token.IsCancellationRequested)
+            {
+                YellowLight.Color =
+                    Colors.Gold;
+
+                YellowLight.Opacity =
+                    1;
+
+
+                await Task.Delay(
+                    550,
+                    token);
+
+
+                YellowLight.Color =
+                    offColor;
+
+                YellowLight.Opacity =
+                    1;
+
+
+                await Task.Delay(
+                    550,
+                    token);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+
+    // ÖÖREŽIIM STOP
+
+    private void StopNightMode()
+    {
+        isNightMode = false;
+
+
+        if (nightCancellation is not null)
+        {
+            nightCancellation.Cancel();
+
+            nightCancellation.Dispose();
+
+            nightCancellation =
+                null;
+        }
+
+
+        NightModeButton.Text =
+            "ÖÖREŽIIM";
+    }
+
+
+    // AUTOMAATREŽIIM
+
+    private void OnAutoModeClicked(
+        object? sender,
+        EventArgs e)
+    {
+        if (!isTrafficLightOn)
+        {
+            StatusLabel.Text =
+                "Lülita esmalt foor sisse";
+
+            StatusLabel.TextColor =
+                Color.FromArgb("#C62828");
+
+            return;
+        }
+
+
+        // Kui automaatrežiim juba töötab
+        if (isAutoMode)
+        {
+            StopAutoMode();
+
+            ShowNormalColors();
+
+            SetLightsClickable(true);
+
+
+            StatusLabel.Text =
+                "Vali valgus";
+
+            StatusLabel.TextColor =
+                Color.FromArgb("#1F2937");
+
+            return;
+        }
+
+
+        StopNightMode();
+
+        isAutoMode = true;
+
+        SetLightsClickable(false);
+
+
+        AutoModeButton.Text =
+            "PEATA AUTOMAATREŽIIM";
+
+
+        StatusLabel.Text =
+            "Automaatrežiim";
+
+        StatusLabel.TextColor =
+            Color.FromArgb("#0277BD");
+
+
+        autoCancellation =
+            new CancellationTokenSource();
+
+
+        _ = RunAutomaticModeAsync(
+            autoCancellation.Token);
+    }
+
+
+    // AUTOMAATNE TSÜKKEL
+
+    private async Task RunAutomaticModeAsync(
+        CancellationToken token)
+    {
+        try
+        {
+            while (isAutoMode &&
+                   isTrafficLightOn &&
+                   !token.IsCancellationRequested)
+            {
+                // 1. PUNANE
+
+                SetSelectedLight(
+                    RedLight,
+                    Colors.Red);
+
+
+                StatusLabel.Text =
+                    "Seisa";
+
+
+                StatusLabel.TextColor =
+                    Colors.Red;
+
+
+                await AnimateLightAsync(
+                    RedLight);
+
+
+                await Task.Delay(
+                    2000,
+                    token);
+
+
+                // 2. KOLLANE
+
+                SetSelectedLight(
+                    YellowLight,
+                    Colors.Gold);
+
+
+                StatusLabel.Text =
+                    "Valmista";
+
+
+                StatusLabel.TextColor =
+                    Color.FromArgb("#D49B00");
+
+
+                await AnimateLightAsync(
+                    YellowLight);
+
+
+                await Task.Delay(
+                    2000,
+                    token);
+
+
+                // 3. ROHELINE
+
+                SetSelectedLight(
+                    GreenLight,
+                    Colors.LimeGreen);
+
+
+                StatusLabel.Text =
+                    "Sõida";
+
+
+                StatusLabel.TextColor =
+                    Color.FromArgb("#2E7D32");
+
+
+                await AnimateLightAsync(
+                    GreenLight);
+
+
+                await Task.Delay(
+                    2000,
+                    token);
+
+
+                // 4. ROHELINE VILGUB ENNE KOLLAST
+
+                StatusLabel.Text =
+                    "Roheline vilgub";
+
+
+                StatusLabel.TextColor =
+                    Color.FromArgb("#2E7D32");
+
+
+                await BlinkGreenAsync(
+                    token);
+
+
+                // 5. KOLLANE
+
+                SetSelectedLight(
+                    YellowLight,
+                    Colors.Gold);
+
+
+                StatusLabel.Text =
+                    "Valmista";
+
+
+                StatusLabel.TextColor =
+                    Color.FromArgb("#D49B00");
+
+
+                await AnimateLightAsync(
+                    YellowLight);
+
+
+                await Task.Delay(
+                    2000,
+                    token);
+
+
+                // Pärast seda algab tsükkel uuesti punasest
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+
+    // ROHELINE VILGUB
+
+    private async Task BlinkGreenAsync(
+        CancellationToken token)
+    {
+        // Punane ja kollane on kustunud
+        RedLight.Color =
+            offColor;
+
+        YellowLight.Color =
+            offColor;
+
+
+        // Vilgub 3 korda
+        for (int i = 0; i < 3; i++)
+        {
+            // Roheline põleb
+            GreenLight.Color =
+                Colors.LimeGreen;
+
+
+            GreenLight.Opacity =
+                1;
+
+
+            await Task.Delay(
+                350,
+                token);
+
+
+            // Roheline kustub
+            GreenLight.Color =
+                offColor;
+
+
+            await Task.Delay(
+                350,
+                token);
+        }
+
+
+        // Pärast vilkumist jääb roheline kustunuks
+        GreenLight.Color =
+            offColor;
+    }
+
+
+    // AUTOMAATREŽIIM STOP
+
+    private void StopAutoMode()
+    {
+        isAutoMode =
+            false;
+
+
+        if (autoCancellation is not null)
+        {
+            autoCancellation.Cancel();
+
+            autoCancellation.Dispose();
+
+            autoCancellation =
+                null;
+        }
+
+
+        AutoModeButton.Text =
+            "AUTOMAATREŽIIM";
+    }
+
+
+    // LEHELT LAHKUMINE
+
     protected override void OnDisappearing()
     {
-        StopNightBlinking();
+        StopNightMode();
+
+        StopAutoMode();
 
         base.OnDisappearing();
     }

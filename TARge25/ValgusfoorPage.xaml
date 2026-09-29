@@ -5,142 +5,241 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Valgusfoor"
-    BackgroundColor="#F3F3F3">
+    BackgroundColor="#F2F4F7">
 
-    <Grid>
+    <ScrollView>
 
-        <!-- Põhisisu -->
         <VerticalStackLayout
-            Padding="20"
-            Spacing="25"
-            HorizontalOptions="Center"
-            VerticalOptions="Center">
+            Padding="24"
+            Spacing="18">
 
-            <!-- Pealkiri -->
+
+            <!-- PEALKIRI -->
+
             <Label
-                x:Name="StatusLabel"
-                Text="Vali valgus"
-                FontSize="28"
+                Text="Valgusfoor"
+                FontSize="30"
                 FontAttributes="Bold"
-                TextColor="Black"
-                HorizontalTextAlignment="Center"
-                HorizontalOptions="Center" />
+                TextColor="#1F2937"
+                HorizontalTextAlignment="Center" />
 
-            <!-- Valgusfoori korpus -->
+
+            <!-- STAATUS -->
+
             <Border
-                x:Name="TrafficLightBody"
-                BackgroundColor="#202020"
-                Padding="20"
-                Stroke="#505050"
-                StrokeThickness="2"
-                HorizontalOptions="Center">
+                BackgroundColor="White"
+                Stroke="#D7DDE5"
+                StrokeThickness="1"
+                Padding="14">
 
                 <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="30" />
+                    <RoundRectangle CornerRadius="16" />
                 </Border.StrokeShape>
 
-                <VerticalStackLayout Spacing="15">
+                <Label
+                    x:Name="StatusLabel"
+                    Text="Vali valgus"
+                    FontSize="21"
+                    FontAttributes="Bold"
+                    TextColor="#1F2937"
+                    HorizontalTextAlignment="Center" />
 
-                    <!-- Punane -->
-                    <Border
+            </Border>
+
+
+            <!-- ============================================ -->
+            <!-- VALGUSFOOR -->
+            <!-- ============================================ -->
+
+            <Grid
+                HorizontalOptions="Center"
+                Margin="0,5">
+
+
+                <!-- FOORI KORPUS -->
+
+                <Border
+                    WidthRequest="180"
+                    HeightRequest="390"
+                    BackgroundColor="#25282D"
+                    Stroke="#111318"
+                    StrokeThickness="4">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="35" />
+                    </Border.StrokeShape>
+
+                </Border>
+
+
+                <!-- TULED -->
+
+                <VerticalStackLayout
+                    Spacing="20"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+
+
+                    <!-- PUNANE -->
+
+                    <BoxView
                         x:Name="RedLight"
                         WidthRequest="100"
                         HeightRequest="100"
-                        BackgroundColor="Gray"
-                        Stroke="#707070"
-                        StrokeThickness="2"
-                        HorizontalOptions="Center">
+                        CornerRadius="50"
+                        Color="Gray"
+                        InputTransparent="True">
 
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="50" />
-                        </Border.StrokeShape>
+                        <BoxView.GestureRecognizers>
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnRedTapped" />
-                        </Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="OnRedTapped" />
 
-                    </Border>
+                        </BoxView.GestureRecognizers>
 
-                    <!-- Kollane -->
-                    <Border
+                    </BoxView>
+
+
+                    <!-- KOLLANE -->
+
+                    <BoxView
                         x:Name="YellowLight"
                         WidthRequest="100"
                         HeightRequest="100"
-                        BackgroundColor="Gray"
-                        Stroke="#707070"
-                        StrokeThickness="2"
-                        HorizontalOptions="Center">
+                        CornerRadius="50"
+                        Color="Gray"
+                        InputTransparent="True">
 
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="50" />
-                        </Border.StrokeShape>
+                        <BoxView.GestureRecognizers>
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnYellowTapped" />
-                        </Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="OnYellowTapped" />
 
-                    </Border>
+                        </BoxView.GestureRecognizers>
 
-                    <!-- Roheline -->
-                    <Border
+                    </BoxView>
+
+
+                    <!-- ROHELINE -->
+
+                    <BoxView
                         x:Name="GreenLight"
                         WidthRequest="100"
                         HeightRequest="100"
-                        BackgroundColor="Gray"
-                        Stroke="#707070"
-                        StrokeThickness="2"
-                        HorizontalOptions="Center">
+                        CornerRadius="50"
+                        Color="Gray"
+                        InputTransparent="True">
 
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="50" />
-                        </Border.StrokeShape>
+                        <BoxView.GestureRecognizers>
 
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnGreenTapped" />
-                        </Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="OnGreenTapped" />
 
-                    </Border>
+                        </BoxView.GestureRecognizers>
+
+                    </BoxView>
+
+                </VerticalStackLayout>
+
+            </Grid>
+
+
+            <!-- ============================================ -->
+            <!-- SISSE / VÄLJA -->
+            <!-- ============================================ -->
+
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="12">
+
+                <Button
+                    Grid.Column="0"
+                    Text="SISSE"
+                    HeightRequest="55"
+                    CornerRadius="15"
+                    FontAttributes="Bold"
+                    FontSize="17"
+                    BackgroundColor="#2E7D32"
+                    TextColor="White"
+                    Clicked="OnTurnOnClicked" />
+
+
+                <Button
+                    Grid.Column="1"
+                    Text="VÄLJA"
+                    HeightRequest="55"
+                    CornerRadius="15"
+                    FontAttributes="Bold"
+                    FontSize="17"
+                    BackgroundColor="#C62828"
+                    TextColor="White"
+                    Clicked="OnTurnOffClicked" />
+
+            </Grid>
+
+
+            <!-- ============================================ -->
+            <!-- LISATEGEVUSED -->
+            <!-- ============================================ -->
+
+            <Border
+                BackgroundColor="White"
+                Stroke="#D7DDE5"
+                StrokeThickness="1"
+                Padding="16">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="18" />
+                </Border.StrokeShape>
+
+
+                <VerticalStackLayout Spacing="12">
+
+                    <Label
+                        Text="Lisategevused"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="#263238" />
+
+
+                    <!-- ÖÖREŽIIM -->
+
+                    <Button
+                        x:Name="NightModeButton"
+                        Text="ÖÖREŽIIM"
+                        HeightRequest="50"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        BackgroundColor="#3949AB"
+                        TextColor="White"
+                        Clicked="OnNightModeClicked" />
+
+
+                    <!-- AUTOMAATREŽIIM -->
+
+                    <Button
+                        x:Name="AutoModeButton"
+                        Text="AUTOMAATREŽIIM"
+                        HeightRequest="50"
+                        CornerRadius="14"
+                        FontAttributes="Bold"
+                        BackgroundColor="#0277BD"
+                        TextColor="White"
+                        Clicked="OnAutoModeClicked" />
+
+
+                    <Label
+                        Text="Automaatrežiimis vahetub tuli iga 2 sekundi järel."
+                        FontSize="12"
+                        TextColor="#78909C"
+                        HorizontalTextAlignment="Center" />
 
                 </VerticalStackLayout>
 
             </Border>
 
-            <!-- Sisse / Välja -->
-            <HorizontalStackLayout
-                Spacing="15"
-                HorizontalOptions="Center">
-
-                <Button
-                    Text="SISSE"
-                    WidthRequest="120"
-                    HeightRequest="50"
-                    Clicked="OnTurnOnClicked" />
-
-                <Button
-                    Text="VÄLJA"
-                    WidthRequest="120"
-                    HeightRequest="50"
-                    Clicked="OnTurnOffClicked" />
-
-            </HorizontalStackLayout>
-
-            <!-- Öörežiim -->
-            <Button
-                x:Name="NightModeButton"
-                Text="ÖÖREŽIIM"
-                WidthRequest="255"
-                HeightRequest="50"
-                Clicked="OnNightModeClicked" />
-
         </VerticalStackLayout>
 
-        <!-- Tume kiht öörežiimi jaoks -->
-        <BoxView
-            x:Name="NightOverlay"
-            BackgroundColor="Black"
-            Opacity="0"
-            InputTransparent="True" />
-
-    </Grid>
+    </ScrollView>
 
 </ContentPage>
