@@ -15,10 +15,8 @@
             Spacing="16"
             BackgroundColor="#E3F2FD">
 
-            <!-- PEALKIRI -->
-
             <Label
-                Text="🌳 Puu hooajad ja elutsükkel"
+                Text="Puu hooajad ja elutsükkel"
                 FontSize="28"
                 FontAttributes="Bold"
                 TextColor="#234B32"
@@ -31,10 +29,7 @@
                 HorizontalTextAlignment="Center" />
 
 
-            <!-- ================================================= -->
-            <!-- PUU JA LOODUS -->
-            <!-- ================================================= -->
-
+            <!-- LOODUS -->
             <Border
                 BackgroundColor="White"
                 Stroke="#CAD8CA"
@@ -44,53 +39,31 @@
                     <RoundRectangle CornerRadius="24" />
                 </Border.StrokeShape>
 
-
                 <AbsoluteLayout
                     x:Name="TreeArea"
                     HeightRequest="470"
                     BackgroundColor="#87CEEB">
 
 
-                    <!-- PÄIKE -->
-
-                    <Border
-                        x:Name="Sun"
-                        WidthRequest="72"
-                        HeightRequest="72"
-                        BackgroundColor="#FFD54F"
-                        Stroke="#FFC107"
-                        StrokeThickness="2"
-                        AbsoluteLayout.LayoutBounds="0.84,0.08,72,72"
-                        AbsoluteLayout.LayoutFlags="PositionProportional">
-
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="36" />
-                        </Border.StrokeShape>
-
-                    </Border>
-
-
                     <!-- PILVED -->
-
                     <Label
                         x:Name="Cloud1"
                         Text="☁️"
-                        FontSize="55"
+                        FontSize="52"
                         Opacity="0.65"
-                        AbsoluteLayout.LayoutBounds="0.10,0.08,90,70"
+                        AbsoluteLayout.LayoutBounds="0.10,0.09,90,65"
                         AbsoluteLayout.LayoutFlags="PositionProportional" />
 
                     <Label
                         x:Name="Cloud2"
                         Text="☁️"
-                        FontSize="38"
+                        FontSize="36"
                         Opacity="0.45"
-                        AbsoluteLayout.LayoutBounds="0.70,0.23,70,55"
+                        AbsoluteLayout.LayoutBounds="0.66,0.21,70,55"
                         AbsoluteLayout.LayoutFlags="PositionProportional" />
 
 
                     <!-- MURU -->
-
                     <BoxView
                         x:Name="GrassBack"
                         Color="#8BC34A"
@@ -104,18 +77,16 @@
                         AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
 
 
-                    <!-- TALVINE LUMI MAAS -->
-
+                    <!-- LUMI MAAS -->
                     <BoxView
                         x:Name="SnowGround"
                         IsVisible="False"
-                        Color="#F5FAFF"
-                        AbsoluteLayout.LayoutBounds="0,1,1,90"
+                        Color="#F8FCFF"
+                        AbsoluteLayout.LayoutBounds="0,1,1,92"
                         AbsoluteLayout.LayoutFlags="WidthProportional,PositionProportional" />
 
 
                     <!-- PUU VARI -->
-
                     <Border
                         WidthRequest="210"
                         HeightRequest="26"
@@ -132,10 +103,7 @@
                     </Border>
 
 
-                    <!-- ================================================= -->
                     <!-- PUU -->
-                    <!-- ================================================= -->
-
                     <AbsoluteLayout
                         x:Name="TreeContainer"
                         WidthRequest="340"
@@ -147,7 +115,6 @@
 
 
                         <!-- OKSAD -->
-
                         <BoxView
                             Color="#6D4C41"
                             CornerRadius="8"
@@ -174,7 +141,6 @@
 
 
                         <!-- TÜVI -->
-
                         <Border
                             x:Name="Trunk"
                             WidthRequest="68"
@@ -225,7 +191,6 @@
 
 
                         <!-- LEHESTIK -->
-
                         <Grid
                             x:Name="Foliage"
                             WidthRequest="330"
@@ -248,7 +213,6 @@
 
                             </Border>
 
-
                             <Border
                                 x:Name="CrownRight"
                                 WidthRequest="160"
@@ -264,7 +228,6 @@
                                 </Border.StrokeShape>
 
                             </Border>
-
 
                             <Border
                                 x:Name="CrownCenter"
@@ -283,7 +246,6 @@
 
                             </Border>
 
-
                             <Border
                                 x:Name="CrownTop"
                                 WidthRequest="170"
@@ -299,7 +261,6 @@
                                 </Border.StrokeShape>
 
                             </Border>
-
 
                             <Border
                                 x:Name="CrownTopLeft"
@@ -317,7 +278,6 @@
                                 </Border.StrokeShape>
 
                             </Border>
-
 
                             <Border
                                 x:Name="CrownTopRight"
@@ -340,7 +300,6 @@
 
 
                         <!-- ÕIED -->
-
                         <Ellipse
                             x:Name="Flower1"
                             WidthRequest="26"
@@ -383,16 +342,15 @@
 
 
                         <!-- ÕUNAD -->
-
                         <Ellipse
                             x:Name="Apple1"
-                            WidthRequest="27"
-                            HeightRequest="27"
+                            WidthRequest="28"
+                            HeightRequest="28"
                             Fill="#E53935"
                             Stroke="#B71C1C"
                             StrokeThickness="2"
                             IsVisible="False"
-                            AbsoluteLayout.LayoutBounds="100,125,27,27">
+                            AbsoluteLayout.LayoutBounds="100,125,28,28">
 
                             <Ellipse.GestureRecognizers>
                                 <TapGestureRecognizer
@@ -402,16 +360,15 @@
 
                         </Ellipse>
 
-
                         <Ellipse
                             x:Name="Apple2"
-                            WidthRequest="27"
-                            HeightRequest="27"
+                            WidthRequest="28"
+                            HeightRequest="28"
                             Fill="#D32F2F"
                             Stroke="#B71C1C"
                             StrokeThickness="2"
                             IsVisible="False"
-                            AbsoluteLayout.LayoutBounds="215,115,27,27">
+                            AbsoluteLayout.LayoutBounds="215,115,28,28">
 
                             <Ellipse.GestureRecognizers>
                                 <TapGestureRecognizer
@@ -421,16 +378,15 @@
 
                         </Ellipse>
 
-
                         <Ellipse
                             x:Name="Apple3"
-                            WidthRequest="27"
-                            HeightRequest="27"
+                            WidthRequest="28"
+                            HeightRequest="28"
                             Fill="#C62828"
                             Stroke="#B71C1C"
                             StrokeThickness="2"
                             IsVisible="False"
-                            AbsoluteLayout.LayoutBounds="165,160,27,27">
+                            AbsoluteLayout.LayoutBounds="165,160,28,28">
 
                             <Ellipse.GestureRecognizers>
                                 <TapGestureRecognizer
@@ -443,10 +399,7 @@
                     </AbsoluteLayout>
 
 
-                    <!-- ================================================= -->
                     <!-- TALV -->
-                    <!-- ================================================= -->
-
                     <AbsoluteLayout
                         x:Name="WinterLayer"
                         IsVisible="False"
@@ -521,10 +474,7 @@
                     </AbsoluteLayout>
 
 
-                    <!-- ================================================= -->
                     <!-- KEVAD -->
-                    <!-- ================================================= -->
-
                     <AbsoluteLayout
                         x:Name="SpringLayer"
                         IsVisible="False"
@@ -553,10 +503,7 @@
                     </AbsoluteLayout>
 
 
-                    <!-- ================================================= -->
                     <!-- SUVI -->
-                    <!-- ================================================= -->
-
                     <AbsoluteLayout
                         x:Name="SummerLayer"
                         IsVisible="False"
@@ -567,14 +514,14 @@
                         <Label
                             x:Name="Butterfly1"
                             Text="🦋"
-                            FontSize="30"
-                            AbsoluteLayout.LayoutBounds="0.17,0.31,45,45"
+                            FontSize="31"
+                            AbsoluteLayout.LayoutBounds="0.15,0.31,45,45"
                             AbsoluteLayout.LayoutFlags="PositionProportional" />
 
                         <Label
                             x:Name="Butterfly2"
                             Text="🦋"
-                            FontSize="26"
+                            FontSize="27"
                             AbsoluteLayout.LayoutBounds="0.80,0.37,40,40"
                             AbsoluteLayout.LayoutFlags="PositionProportional" />
 
@@ -593,10 +540,7 @@
                     </AbsoluteLayout>
 
 
-                    <!-- ================================================= -->
                     <!-- SÜGIS -->
-                    <!-- ================================================= -->
-
                     <AbsoluteLayout
                         x:Name="AutumnLayer"
                         IsVisible="False"
@@ -636,51 +580,215 @@
 
 
                     <!-- ================================================= -->
-                    <!-- ÖÖ KIHT -->
+                    <!-- PÄIKE -->
                     <!-- ================================================= -->
 
-                    <BoxView
-                        x:Name="NightOverlay"
-                        BackgroundColor="#071525"
-                        Opacity="0"
-                        InputTransparent="True"
-                        AbsoluteLayout.LayoutBounds="0,0,1,1"
-                        AbsoluteLayout.LayoutFlags="All" />
+                    <Border
+                        x:Name="Sun"
+                        WidthRequest="58"
+                        HeightRequest="58"
+                        BackgroundColor="#FFD54F"
+                        Stroke="#FFC107"
+                        StrokeThickness="2"
+                        ZIndex="100"
+                        AbsoluteLayout.LayoutBounds="0.94,0.06,58,58"
+                        AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="29" />
+                        </Border.StrokeShape>
+
+                    </Border>
 
 
-                    <!-- KUU -->
-
-                    <Label
-                        x:Name="Moon"
-                        Text="🌙"
-                        FontSize="65"
-                        IsVisible="False"
-                        InputTransparent="True"
-                        AbsoluteLayout.LayoutBounds="0.82,0.08,80,80"
-                        AbsoluteLayout.LayoutFlags="PositionProportional" />
-
+                    <!-- ================================================= -->
+                    <!-- ÖÖTAEVAS -->
+                    <!-- ================================================= -->
 
                     <!-- TÄHED -->
 
                     <Label
-                        x:Name="Stars1"
-                        Text="✦  ✧   ✦"
-                        FontSize="22"
+                        x:Name="Star1"
+                        Text="★"
+                        FontSize="16"
                         TextColor="White"
+                        Opacity="0"
                         IsVisible="False"
                         InputTransparent="True"
-                        AbsoluteLayout.LayoutBounds="0.13,0.07,130,50"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.08,0.08,25,25"
                         AbsoluteLayout.LayoutFlags="PositionProportional" />
 
                     <Label
-                        x:Name="Stars2"
-                        Text="✧   ✦  ✧"
+                        x:Name="Star2"
+                        Text="✦"
                         FontSize="18"
-                        TextColor="White"
+                        TextColor="#FFF7CC"
+                        Opacity="0"
                         IsVisible="False"
                         InputTransparent="True"
-                        AbsoluteLayout.LayoutBounds="0.62,0.18,120,45"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.18,0.17,25,25"
                         AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star3"
+                        Text="★"
+                        FontSize="14"
+                        TextColor="White"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.30,0.07,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star4"
+                        Text="✧"
+                        FontSize="18"
+                        TextColor="#FFF7CC"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.43,0.15,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star5"
+                        Text="★"
+                        FontSize="15"
+                        TextColor="White"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.55,0.08,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star6"
+                        Text="✦"
+                        FontSize="17"
+                        TextColor="#FFF7CC"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.66,0.18,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star7"
+                        Text="★"
+                        FontSize="13"
+                        TextColor="White"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.77,0.09,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star8"
+                        Text="✧"
+                        FontSize="15"
+                        TextColor="#FFF7CC"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.88,0.18,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+                    <Label
+                        x:Name="Star9"
+                        Text="★"
+                        FontSize="12"
+                        TextColor="White"
+                        Opacity="0"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="90"
+                        AbsoluteLayout.LayoutBounds="0.37,0.26,25,25"
+                        AbsoluteLayout.LayoutFlags="PositionProportional" />
+
+
+                    <!-- KUU VALGUS -->
+
+                    <Border
+                        x:Name="MoonGlow"
+                        WidthRequest="68"
+                        HeightRequest="68"
+                        BackgroundColor="#44FFF3B0"
+                        StrokeThickness="0"
+                        Opacity="0.80"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="100"
+                        AbsoluteLayout.LayoutBounds="0.94,0.06,68,68"
+                        AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="34" />
+                        </Border.StrokeShape>
+
+                    </Border>
+
+
+                    <!-- KUU -->
+
+                    <Border
+                        x:Name="Moon"
+                        WidthRequest="50"
+                        HeightRequest="50"
+                        BackgroundColor="#FFF2AE"
+                        Stroke="#F4DA7A"
+                        StrokeThickness="2"
+                        IsVisible="False"
+                        InputTransparent="True"
+                        ZIndex="101"
+                        AbsoluteLayout.LayoutBounds="0.94,0.06,50,50"
+                        AbsoluteLayout.LayoutFlags="PositionProportional">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="25" />
+                        </Border.StrokeShape>
+
+                        <Grid>
+
+                            <Ellipse
+                                WidthRequest="7"
+                                HeightRequest="7"
+                                Fill="#E2CE87"
+                                Opacity="0.55"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Start"
+                                Margin="10,10,0,0" />
+
+                            <Ellipse
+                                WidthRequest="5"
+                                HeightRequest="5"
+                                Fill="#E2CE87"
+                                Opacity="0.50"
+                                HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                Margin="0,0,10,0" />
+
+                            <Ellipse
+                                WidthRequest="6"
+                                HeightRequest="6"
+                                Fill="#E2CE87"
+                                Opacity="0.45"
+                                HorizontalOptions="Center"
+                                VerticalOptions="End"
+                                Margin="0,0,0,9" />
+
+                        </Grid>
+
+                    </Border>
 
                 </AbsoluteLayout>
 
@@ -688,7 +796,6 @@
 
 
             <!-- INFO -->
-
             <Border
                 BackgroundColor="#E8F5E9"
                 Stroke="#A5D6A7"
@@ -711,7 +818,6 @@
 
 
             <!-- TEGEVUS -->
-
             <Border
                 BackgroundColor="White"
                 Stroke="#DCE5DD"
@@ -725,7 +831,7 @@
                 <VerticalStackLayout Spacing="10">
 
                     <Label
-                        Text="⚙️ Tegevus"
+                        Text="Tegevus"
                         FontSize="18"
                         FontAttributes="Bold"
                         TextColor="#263238" />
@@ -759,7 +865,6 @@
 
 
             <!-- LEHESTIK -->
-
             <Border
                 BackgroundColor="White"
                 Stroke="#DCE5DD"
@@ -773,7 +878,7 @@
                 <VerticalStackLayout Spacing="8">
 
                     <Label
-                        Text="🍃 Lehestiku läbipaistvus"
+                        Text="Lehestiku läbipaistvus"
                         FontSize="17"
                         FontAttributes="Bold"
                         TextColor="#263238" />
@@ -800,7 +905,6 @@
 
 
             <!-- KIIRUS -->
-
             <Border
                 BackgroundColor="White"
                 Stroke="#DCE5DD"
@@ -814,7 +918,7 @@
                 <VerticalStackLayout Spacing="10">
 
                     <Label
-                        Text="⏱ Animatsiooni kiirus"
+                        Text="Animatsiooni kiirus"
                         FontSize="17"
                         FontAttributes="Bold"
                         TextColor="#263238" />
@@ -845,8 +949,7 @@
             </Border>
 
 
-            <!-- AEG -->
-
+            <!-- KUUPÄEV JA KELL -->
             <Border
                 BackgroundColor="White"
                 Stroke="#DCE5DD"
@@ -861,7 +964,7 @@
                 <VerticalStackLayout Spacing="12">
 
                     <Label
-                        Text="📅 Virtuaalne aeg"
+                        Text="Virtuaalne aeg"
                         FontSize="18"
                         FontAttributes="Bold"
                         TextColor="#263238" />
@@ -871,7 +974,8 @@
                         ColumnSpacing="12">
 
                         <VerticalStackLayout
-                            Grid.Column="0">
+                            Grid.Column="0"
+                            Spacing="4">
 
                             <Label
                                 Text="Kuupäev"
@@ -886,7 +990,8 @@
 
 
                         <VerticalStackLayout
-                            Grid.Column="1">
+                            Grid.Column="1"
+                            Spacing="4">
 
                             <Label
                                 Text="Kellaaeg"
@@ -905,12 +1010,11 @@
 
                     <Label
                         x:Name="TimeStatusLabel"
-                        Text="☀️ Päev"
+                        Text="Päev – on valge"
                         FontSize="14"
                         FontAttributes="Bold"
                         TextColor="#455A64"
                         HorizontalTextAlignment="Center" />
-
 
                     <Label
                         Text="🪓 Langetada saab ainult talvel kell 08:00–17:00"

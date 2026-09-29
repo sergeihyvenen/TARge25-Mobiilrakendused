@@ -8,6 +8,7 @@ public partial class TreePage : ContentPage
     private readonly Random random = new();
 
     private CancellationTokenSource? seasonAnimationCancellation;
+    private CancellationTokenSource? nightSkyCancellation;
 
 
     public TreePage()
@@ -17,13 +18,18 @@ public partial class TreePage : ContentPage
         ActionPicker.SelectedIndex = 0;
 
         UpdateSpeedLabel();
+    }
+
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
 
         DateTime date =
-            SeasonDatePicker.Date ?? DateTime.Today;
+            SeasonDatePicker.Date
+            ?? DateTime.Today;
 
         ApplySeason(date);
-
-        UpdateDayNight();
     }
 
 
@@ -44,7 +50,8 @@ public partial class TreePage : ContentPage
         }
 
         string action =
-            ActionPicker.SelectedItem.ToString() ?? "";
+            ActionPicker.SelectedItem.ToString()
+            ?? "";
 
         switch (action)
         {
@@ -74,27 +81,30 @@ public partial class TreePage : ContentPage
     private async Task GrowTree()
     {
         ResetTreeTransform();
-        ResetButterflies();
 
         uint duration =
             GetAnimationDuration();
 
-        // Väike ja normaalne kasv.
-        double finalScale =
-            1.05 +
-            random.NextDouble() * 0.07;
 
-        TreeContainer.Scale = 0.94;
+        // Väike normaalne kasv
+        double finalScale =
+            1.06 +
+            random.NextDouble() * 0.05;
+
+
+        TreeContainer.Scale = 0.95;
+
 
         InfoLabel.Text =
             "🌱 Puu kasvab!";
 
 
-        // SUVEL kasvavad liblikad puuga samal ajal.
+        // Suvel kasvavad liblikad puuga samal ajal
         if (SummerLayer.IsVisible)
         {
-            Butterfly1.Scale = 0.94;
-            Butterfly2.Scale = 0.94;
+            Butterfly1.Scale = 0.95;
+            Butterfly2.Scale = 0.95;
+
 
             await Task.WhenAll(
 
@@ -114,6 +124,7 @@ public partial class TreePage : ContentPage
                     Easing.CubicOut)
             );
 
+
             InfoLabel.Text =
                 "🌳 Puu ja liblikad kasvasid!";
         }
@@ -123,6 +134,7 @@ public partial class TreePage : ContentPage
                 finalScale,
                 duration,
                 Easing.CubicOut);
+
 
             InfoLabel.Text =
                 "🌳 Puu kasvas!";
@@ -138,8 +150,10 @@ public partial class TreePage : ContentPage
     {
         ResetTreeTransform();
 
+
         uint duration =
             GetAnimationDuration();
+
 
         InfoLabel.Text =
             "🌸 Puu õitseb!";
@@ -186,13 +200,16 @@ public partial class TreePage : ContentPage
     {
         ResetTreeTransform();
 
+
         uint duration =
             GetAnimationDuration();
+
 
         uint part =
             Math.Max(
                 duration / 6,
-                50);
+                50u);
+
 
         InfoLabel.Text =
             "💨 Puu väriseb tuules!";
@@ -204,11 +221,13 @@ public partial class TreePage : ContentPage
             part,
             Easing.Linear);
 
+
         await TreeContainer.TranslateToAsync(
             22,
             0,
             part,
             Easing.Linear);
+
 
         await TreeContainer.TranslateToAsync(
             -16,
@@ -216,17 +235,20 @@ public partial class TreePage : ContentPage
             part,
             Easing.Linear);
 
+
         await TreeContainer.TranslateToAsync(
             16,
             0,
             part,
             Easing.Linear);
 
+
         await TreeContainer.TranslateToAsync(
             -8,
             0,
             part,
             Easing.Linear);
+
 
         await TreeContainer.TranslateToAsync(
             0,
@@ -317,7 +339,7 @@ public partial class TreePage : ContentPage
 
 
     // =========================================================
-    // ÕUN
+    // ÕUNAD
     // =========================================================
 
     private async void OnAppleTapped(
@@ -351,26 +373,31 @@ public partial class TreePage : ContentPage
 
 
         InfoLabel.Text =
-            "🍎 Õun kukub!";
+            "🍎 Õun kukub puult!";
 
 
-        // Kukub alla, pöörleb ja kaob.
+        uint duration =
+            Math.Max(
+                GetAnimationDuration(),
+                500u);
+
+
         await Task.WhenAll(
 
             apple.TranslateToAsync(
                 0,
-                210,
-                750,
+                220,
+                duration,
                 Easing.CubicIn),
 
             apple.RotateToAsync(
                 360,
-                750,
+                duration,
                 Easing.Linear),
 
             apple.FadeToAsync(
                 0,
-                750)
+                duration)
         );
 
 
@@ -396,7 +423,7 @@ public partial class TreePage : ContentPage
 
 
     // =========================================================
-    // SPEED
+    // KIIRUS
     // =========================================================
 
     private void OnSpeedChanged(
@@ -409,23 +436,29 @@ public partial class TreePage : ContentPage
 
     private void UpdateSpeedLabel()
     {
-        int ms =
+        int milliseconds =
             (int)SpeedStepper.Value;
 
 
         string text;
 
 
-        if (ms <= 750)
+        if (milliseconds <= 750)
+        {
             text = "kiire";
-        else if (ms <= 1250)
+        }
+        else if (milliseconds <= 1250)
+        {
             text = "keskmine";
+        }
         else
+        {
             text = "aeglane";
+        }
 
 
         SpeedLabel.Text =
-            $"{ms} ms – {text}";
+            $"{milliseconds} ms – {text}";
     }
 
 
@@ -456,8 +489,6 @@ public partial class TreePage : ContentPage
 
 
         ApplySeason(date);
-
-        UpdateDayNight();
     }
 
 
@@ -492,47 +523,287 @@ public partial class TreePage : ContentPage
             time.Hours;
 
 
-        // Päev 08:00 - 17:59
         bool isDay =
             hour >= 8 &&
             hour < 18;
 
 
+        // =====================================================
+        // PÄEV
+        // =====================================================
+
         if (isDay)
         {
-            NightOverlay.Opacity = 0;
+            TreeArea.BackgroundColor =
+                GetDaySkyColor();
 
-            Moon.IsVisible = false;
 
-            Stars1.IsVisible = false;
-            Stars2.IsVisible = false;
+            Sun.IsVisible =
+                true;
 
-            Sun.IsVisible = true;
+
+            Moon.IsVisible =
+                false;
+
+
+            MoonGlow.IsVisible =
+                false;
+
+
+            Cloud1.IsVisible =
+                true;
+
+
+            Cloud2.IsVisible =
+                true;
+
+
+            HideStars();
+
+            StopNightSkyAnimation();
+
 
             TimeStatusLabel.Text =
                 "☀️ Päev – on valge";
 
+
             TimeStatusLabel.TextColor =
                 Color.FromArgb("#455A64");
         }
+
+        // =====================================================
+        // ÖÖ
+        // =====================================================
+
         else
         {
-            // Tume kiht kogu looduse peale
-            NightOverlay.Opacity = 0.53;
+            // Ei mingit tumedat overlay'd.
+            // Lihtsalt sinine mängulik öötaevas.
 
-            Moon.IsVisible = true;
+            TreeArea.BackgroundColor =
+                Color.FromArgb("#3E6FA8");
 
-            Stars1.IsVisible = true;
-            Stars2.IsVisible = true;
 
-            Sun.IsVisible = false;
+            Sun.IsVisible =
+                false;
+
+
+            MoonGlow.IsVisible =
+                true;
+
+
+            Moon.IsVisible =
+                true;
+
+
+            // Öösel pilved peidus
+            Cloud1.IsVisible =
+                false;
+
+
+            Cloud2.IsVisible =
+                false;
+
+
+            ShowStars();
+
+            StartNightSkyAnimation();
+
 
             TimeStatusLabel.Text =
-                "🌙 Öö – on pime";
+                "🌙 Öö – sinine tähistaevas";
+
 
             TimeStatusLabel.TextColor =
-                Color.FromArgb("#3949AB");
+                Color.FromArgb("#3E5F8A");
         }
+    }
+
+
+    // =========================================================
+    // PÄEVASE TAEVA VÄRV
+    // =========================================================
+
+    private Color GetDaySkyColor()
+    {
+        DateTime date =
+            SeasonDatePicker.Date
+            ?? DateTime.Today;
+
+
+        int month =
+            date.Month;
+
+
+        // Talv
+        if (month == 12 ||
+            month == 1 ||
+            month == 2)
+        {
+            return Color.FromArgb(
+                "#B8D1E5");
+        }
+
+
+        // Kevad
+        if (month >= 3 &&
+            month <= 5)
+        {
+            return Color.FromArgb(
+                "#BFE8FF");
+        }
+
+
+        // Suvi
+        if (month >= 6 &&
+            month <= 8)
+        {
+            return Color.FromArgb(
+                "#87CEEB");
+        }
+
+
+        // Sügis
+        return Color.FromArgb(
+            "#E9B872");
+    }
+
+
+    // =========================================================
+    // TÄHED
+    // =========================================================
+
+    private void ShowStars()
+    {
+        Star1.IsVisible = true;
+        Star2.IsVisible = true;
+        Star3.IsVisible = true;
+        Star4.IsVisible = true;
+        Star5.IsVisible = true;
+        Star6.IsVisible = true;
+        Star7.IsVisible = true;
+        Star8.IsVisible = true;
+        Star9.IsVisible = true;
+    }
+
+
+    private void HideStars()
+    {
+        Star1.IsVisible = false;
+        Star2.IsVisible = false;
+        Star3.IsVisible = false;
+        Star4.IsVisible = false;
+        Star5.IsVisible = false;
+        Star6.IsVisible = false;
+        Star7.IsVisible = false;
+        Star8.IsVisible = false;
+        Star9.IsVisible = false;
+    }
+
+
+    private void StartNightSkyAnimation()
+    {
+        StopNightSkyAnimation();
+
+
+        nightSkyCancellation =
+            new CancellationTokenSource();
+
+
+        CancellationToken token =
+            nightSkyCancellation.Token;
+
+
+        _ = AnimateStarAsync(
+            Star1, 0, token);
+
+        _ = AnimateStarAsync(
+            Star2, 120, token);
+
+        _ = AnimateStarAsync(
+            Star3, 240, token);
+
+        _ = AnimateStarAsync(
+            Star4, 360, token);
+
+        _ = AnimateStarAsync(
+            Star5, 480, token);
+
+        _ = AnimateStarAsync(
+            Star6, 600, token);
+
+        _ = AnimateStarAsync(
+            Star7, 720, token);
+
+        _ = AnimateStarAsync(
+            Star8, 840, token);
+
+        _ = AnimateStarAsync(
+            Star9, 960, token);
+    }
+
+
+    private async Task AnimateStarAsync(
+        VisualElement star,
+        int startDelay,
+        CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(
+                startDelay,
+                token);
+
+
+            while (!token.IsCancellationRequested)
+            {
+                double bright =
+                    0.60 +
+                    random.NextDouble() * 0.40;
+
+
+                uint brightTime =
+                    (uint)random.Next(
+                        400,
+                        800);
+
+
+                uint darkTime =
+                    (uint)random.Next(
+                        500,
+                        1000);
+
+
+                await star.FadeToAsync(
+                    bright,
+                    brightTime,
+                    Easing.SinInOut);
+
+
+                await star.FadeToAsync(
+                    0.25,
+                    darkTime,
+                    Easing.SinInOut);
+            }
+        }
+        catch (TaskCanceledException)
+        {
+        }
+    }
+
+
+    private void StopNightSkyAnimation()
+    {
+        if (nightSkyCancellation is null)
+            return;
+
+
+        nightSkyCancellation.Cancel();
+
+        nightSkyCancellation.Dispose();
+
+        nightSkyCancellation =
+            null;
     }
 
 
@@ -544,6 +815,7 @@ public partial class TreePage : ContentPage
         DateTime date)
     {
         StopSeasonAnimations();
+
 
         HideSeasonLayers();
 
@@ -558,15 +830,14 @@ public partial class TreePage : ContentPage
             date.Month;
 
 
+        // =====================================================
         // TALV
+        // =====================================================
+
         if (month == 12 ||
             month == 1 ||
             month == 2)
         {
-            TreeArea.BackgroundColor =
-                Color.FromArgb("#B8C8D6");
-
-
             MainLayout.BackgroundColor =
                 Color.FromArgb("#E9EFF3");
 
@@ -579,9 +850,20 @@ public partial class TreePage : ContentPage
                 Color.FromArgb("#CBD8DE");
 
 
-            SnowGround.IsVisible = true;
+            SnowGround.IsVisible =
+                true;
 
-            WinterLayer.IsVisible = true;
+
+            WinterLayer.IsVisible =
+                true;
+
+
+            Cloud1.Opacity =
+                0.85;
+
+
+            Cloud2.Opacity =
+                0.75;
 
 
             SetCrownColors(
@@ -601,14 +883,14 @@ public partial class TreePage : ContentPage
             StartSnowAnimation();
         }
 
+
+        // =====================================================
         // KEVAD
+        // =====================================================
+
         else if (month >= 3 &&
                  month <= 5)
         {
-            TreeArea.BackgroundColor =
-                Color.FromArgb("#BFE8FF");
-
-
             MainLayout.BackgroundColor =
                 Color.FromArgb("#E8F5E9");
 
@@ -621,7 +903,16 @@ public partial class TreePage : ContentPage
                 Color.FromArgb("#7CB342");
 
 
-            SpringLayer.IsVisible = true;
+            SpringLayer.IsVisible =
+                true;
+
+
+            Cloud1.Opacity =
+                0.65;
+
+
+            Cloud2.Opacity =
+                0.50;
 
 
             SetCrownColors(
@@ -638,14 +929,14 @@ public partial class TreePage : ContentPage
                 "🌷 Kevad – loodus ärkab";
         }
 
+
+        // =====================================================
         // SUVI
+        // =====================================================
+
         else if (month >= 6 &&
                  month <= 8)
         {
-            TreeArea.BackgroundColor =
-                Color.FromArgb("#87CEEB");
-
-
             MainLayout.BackgroundColor =
                 Color.FromArgb("#E3F2FD");
 
@@ -658,7 +949,16 @@ public partial class TreePage : ContentPage
                 Color.FromArgb("#689F38");
 
 
-            SummerLayer.IsVisible = true;
+            SummerLayer.IsVisible =
+                true;
+
+
+            Cloud1.Opacity =
+                0.55;
+
+
+            Cloud2.Opacity =
+                0.40;
 
 
             SetCrownColors(
@@ -671,7 +971,6 @@ public partial class TreePage : ContentPage
             );
 
 
-            // Suvel on õunad.
             ResetApples(true);
 
 
@@ -679,13 +978,13 @@ public partial class TreePage : ContentPage
                 "☀️ Suvi – õunad ja liblikad";
         }
 
+
+        // =====================================================
         // SÜGIS
+        // =====================================================
+
         else
         {
-            TreeArea.BackgroundColor =
-                Color.FromArgb("#E9B872");
-
-
             MainLayout.BackgroundColor =
                 Color.FromArgb("#FFF3E0");
 
@@ -698,7 +997,16 @@ public partial class TreePage : ContentPage
                 Color.FromArgb("#827C3C");
 
 
-            AutumnLayer.IsVisible = true;
+            AutumnLayer.IsVisible =
+                true;
+
+
+            Cloud1.Opacity =
+                0.75;
+
+
+            Cloud2.Opacity =
+                0.65;
 
 
             SetCrownColors(
@@ -738,17 +1046,22 @@ public partial class TreePage : ContentPage
         CrownLeft.BackgroundColor =
             Color.FromArgb(left);
 
+
         CrownRight.BackgroundColor =
             Color.FromArgb(right);
+
 
         CrownCenter.BackgroundColor =
             Color.FromArgb(center);
 
+
         CrownTop.BackgroundColor =
             Color.FromArgb(top);
 
+
         CrownTopLeft.BackgroundColor =
             Color.FromArgb(topLeft);
+
 
         CrownTopRight.BackgroundColor =
             Color.FromArgb(topRight);
@@ -769,36 +1082,60 @@ public partial class TreePage : ContentPage
             seasonAnimationCancellation.Token;
 
 
-        _ = AnimateSnowflake(Snow1, 0, token);
-        _ = AnimateSnowflake(Snow2, 250, token);
-        _ = AnimateSnowflake(Snow3, 500, token);
-        _ = AnimateSnowflake(Snow4, 750, token);
-        _ = AnimateSnowflake(Snow5, 1000, token);
-        _ = AnimateSnowflake(Snow6, 1250, token);
-        _ = AnimateSnowflake(Snow7, 1500, token);
-        _ = AnimateSnowflake(Snow8, 1750, token);
+        _ = AnimateSnowflake(
+            Snow1, 0, token);
+
+        _ = AnimateSnowflake(
+            Snow2, 250, token);
+
+        _ = AnimateSnowflake(
+            Snow3, 500, token);
+
+        _ = AnimateSnowflake(
+            Snow4, 750, token);
+
+        _ = AnimateSnowflake(
+            Snow5, 1000, token);
+
+        _ = AnimateSnowflake(
+            Snow6, 1250, token);
+
+        _ = AnimateSnowflake(
+            Snow7, 1500, token);
+
+        _ = AnimateSnowflake(
+            Snow8, 1750, token);
     }
 
 
     private async Task AnimateSnowflake(
         VisualElement snowflake,
-        int delay,
+        int startDelay,
         CancellationToken token)
     {
         try
         {
             await Task.Delay(
-                delay,
+                startDelay,
                 token);
 
 
             while (!token.IsCancellationRequested)
             {
-                snowflake.TranslationX = 0;
-                snowflake.TranslationY = 0;
+                snowflake.TranslationX =
+                    0;
 
 
-                double x =
+                snowflake.TranslationY =
+                    0;
+
+
+                snowflake.Opacity =
+                    0.60 +
+                    random.NextDouble() * 0.40;
+
+
+                double moveX =
                     random.Next(
                         -35,
                         36);
@@ -811,14 +1148,18 @@ public partial class TreePage : ContentPage
 
 
                 await snowflake.TranslateToAsync(
-                    x,
+                    moveX,
                     330,
                     duration,
                     Easing.Linear);
 
 
-                snowflake.TranslationX = 0;
-                snowflake.TranslationY = 0;
+                snowflake.TranslationX =
+                    0;
+
+
+                snowflake.TranslationY =
+                    0;
             }
         }
         catch (TaskCanceledException)
@@ -828,7 +1169,7 @@ public partial class TreePage : ContentPage
 
 
     // =========================================================
-    // SÜGIS
+    // SÜGISLEHED
     // =========================================================
 
     private void StartAutumnAnimation()
@@ -846,15 +1187,18 @@ public partial class TreePage : ContentPage
             0,
             token);
 
+
         _ = AnimateAutumnLeaf(
             AutumnLeaf2,
             400,
             token);
 
+
         _ = AnimateAutumnLeaf(
             AutumnLeaf3,
             800,
             token);
+
 
         _ = AnimateAutumnLeaf(
             AutumnLeaf4,
@@ -865,24 +1209,31 @@ public partial class TreePage : ContentPage
 
     private async Task AnimateAutumnLeaf(
         VisualElement leaf,
-        int delay,
+        int startDelay,
         CancellationToken token)
     {
         try
         {
             await Task.Delay(
-                delay,
+                startDelay,
                 token);
 
 
             while (!token.IsCancellationRequested)
             {
-                leaf.TranslationX = 0;
-                leaf.TranslationY = 0;
-                leaf.Rotation = 0;
+                leaf.TranslationX =
+                    0;
 
 
-                double x =
+                leaf.TranslationY =
+                    0;
+
+
+                leaf.Rotation =
+                    0;
+
+
+                double moveX =
                     random.Next(
                         -70,
                         71);
@@ -897,7 +1248,7 @@ public partial class TreePage : ContentPage
                 await Task.WhenAll(
 
                     leaf.TranslateToAsync(
-                        x,
+                        moveX,
                         300,
                         duration,
                         Easing.Linear),
@@ -909,9 +1260,16 @@ public partial class TreePage : ContentPage
                 );
 
 
-                leaf.TranslationX = 0;
-                leaf.TranslationY = 0;
-                leaf.Rotation = 0;
+                leaf.TranslationX =
+                    0;
+
+
+                leaf.TranslationY =
+                    0;
+
+
+                leaf.Rotation =
+                    0;
             }
         }
         catch (TaskCanceledException)
@@ -921,15 +1279,25 @@ public partial class TreePage : ContentPage
 
 
     // =========================================================
-    // ÕUNAD
+    // ÕUNAD RESET
     // =========================================================
 
     private void ResetApples(
         bool visible)
     {
-        ResetApple(Apple1, visible);
-        ResetApple(Apple2, visible);
-        ResetApple(Apple3, visible);
+        ResetApple(
+            Apple1,
+            visible);
+
+
+        ResetApple(
+            Apple2,
+            visible);
+
+
+        ResetApple(
+            Apple3,
+            visible);
     }
 
 
@@ -937,14 +1305,24 @@ public partial class TreePage : ContentPage
         Ellipse apple,
         bool visible)
     {
-        apple.IsVisible = visible;
+        apple.IsVisible =
+            visible;
 
-        apple.TranslationX = 0;
-        apple.TranslationY = 0;
 
-        apple.Rotation = 0;
+        apple.TranslationX =
+            0;
 
-        apple.Opacity = 1;
+
+        apple.TranslationY =
+            0;
+
+
+        apple.Rotation =
+            0;
+
+
+        apple.Opacity =
+            1;
     }
 
 
@@ -954,102 +1332,168 @@ public partial class TreePage : ContentPage
 
     private void ResetButterflies()
     {
-        Butterfly1.Scale = 1;
-        Butterfly2.Scale = 1;
+        Butterfly1.Scale =
+            1;
 
-        Butterfly1.TranslationX = 0;
-        Butterfly1.TranslationY = 0;
 
-        Butterfly2.TranslationX = 0;
-        Butterfly2.TranslationY = 0;
+        Butterfly2.Scale =
+            1;
+
+
+        Butterfly1.TranslationX =
+            0;
+
+
+        Butterfly1.TranslationY =
+            0;
+
+
+        Butterfly2.TranslationX =
+            0;
+
+
+        Butterfly2.TranslationY =
+            0;
     }
 
 
     // =========================================================
-    // RESET
+    // PUU RESET
     // =========================================================
 
     private void ResetTreeTransform()
     {
-        TreeContainer.Scale = 1;
+        TreeContainer.Scale =
+            1;
 
-        TreeContainer.Rotation = 0;
 
-        TreeContainer.TranslationX = 0;
-        TreeContainer.TranslationY = 0;
+        TreeContainer.Rotation =
+            0;
 
-        TreeContainer.AnchorX = 0.5;
-        TreeContainer.AnchorY = 1;
+
+        TreeContainer.TranslationX =
+            0;
+
+
+        TreeContainer.TranslationY =
+            0;
+
+
+        TreeContainer.AnchorX =
+            0.5;
+
+
+        TreeContainer.AnchorY =
+            1;
     }
 
 
     private void HideFlowers()
     {
-        Flower1.IsVisible = false;
-        Flower2.IsVisible = false;
-        Flower3.IsVisible = false;
-        Flower4.IsVisible = false;
+        Flower1.IsVisible =
+            false;
+
+
+        Flower2.IsVisible =
+            false;
+
+
+        Flower3.IsVisible =
+            false;
+
+
+        Flower4.IsVisible =
+            false;
     }
 
 
     private void HideSeasonLayers()
     {
-        WinterLayer.IsVisible = false;
-        SpringLayer.IsVisible = false;
-        SummerLayer.IsVisible = false;
-        AutumnLayer.IsVisible = false;
+        WinterLayer.IsVisible =
+            false;
 
-        SnowGround.IsVisible = false;
+
+        SpringLayer.IsVisible =
+            false;
+
+
+        SummerLayer.IsVisible =
+            false;
+
+
+        AutumnLayer.IsVisible =
+            false;
+
+
+        SnowGround.IsVisible =
+            false;
     }
 
 
     private void ResetSeasonElements()
     {
-        Snow1.TranslationX = 0;
-        Snow1.TranslationY = 0;
-
-        Snow2.TranslationX = 0;
-        Snow2.TranslationY = 0;
-
-        Snow3.TranslationX = 0;
-        Snow3.TranslationY = 0;
-
-        Snow4.TranslationX = 0;
-        Snow4.TranslationY = 0;
-
-        Snow5.TranslationX = 0;
-        Snow5.TranslationY = 0;
-
-        Snow6.TranslationX = 0;
-        Snow6.TranslationY = 0;
-
-        Snow7.TranslationX = 0;
-        Snow7.TranslationY = 0;
-
-        Snow8.TranslationX = 0;
-        Snow8.TranslationY = 0;
+        ResetSnowflake(Snow1);
+        ResetSnowflake(Snow2);
+        ResetSnowflake(Snow3);
+        ResetSnowflake(Snow4);
+        ResetSnowflake(Snow5);
+        ResetSnowflake(Snow6);
+        ResetSnowflake(Snow7);
+        ResetSnowflake(Snow8);
 
 
-        AutumnLeaf1.TranslationX = 0;
-        AutumnLeaf1.TranslationY = 0;
-        AutumnLeaf1.Rotation = 0;
+        ResetAutumnLeaf(
+            AutumnLeaf1);
 
-        AutumnLeaf2.TranslationX = 0;
-        AutumnLeaf2.TranslationY = 0;
-        AutumnLeaf2.Rotation = 0;
+        ResetAutumnLeaf(
+            AutumnLeaf2);
 
-        AutumnLeaf3.TranslationX = 0;
-        AutumnLeaf3.TranslationY = 0;
-        AutumnLeaf3.Rotation = 0;
+        ResetAutumnLeaf(
+            AutumnLeaf3);
 
-        AutumnLeaf4.TranslationX = 0;
-        AutumnLeaf4.TranslationY = 0;
-        AutumnLeaf4.Rotation = 0;
+        ResetAutumnLeaf(
+            AutumnLeaf4);
 
 
         ResetButterflies();
     }
 
+
+    private static void ResetSnowflake(
+        VisualElement snowflake)
+    {
+        snowflake.TranslationX =
+            0;
+
+
+        snowflake.TranslationY =
+            0;
+
+
+        snowflake.Opacity =
+            1;
+    }
+
+
+    private static void ResetAutumnLeaf(
+        VisualElement leaf)
+    {
+        leaf.TranslationX =
+            0;
+
+
+        leaf.TranslationY =
+            0;
+
+
+        leaf.Rotation =
+            0;
+    }
+
+
+    // =========================================================
+    // STOP
+    // =========================================================
 
     private void StopSeasonAnimations()
     {
@@ -1061,13 +1505,16 @@ public partial class TreePage : ContentPage
 
         seasonAnimationCancellation.Dispose();
 
-        seasonAnimationCancellation = null;
+        seasonAnimationCancellation =
+            null;
     }
 
 
     protected override void OnDisappearing()
     {
         StopSeasonAnimations();
+
+        StopNightSkyAnimation();
 
         base.OnDisappearing();
     }
